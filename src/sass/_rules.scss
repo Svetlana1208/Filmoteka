@@ -1,0 +1,40 @@
+ul, li, a, p, h1, h2, h3, button {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-decoration: none;
+}
+
+img {
+    display: block;
+    width: 100%;
+    margin: 0;
+}
+
+body, h1, h2, h3 {
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+}
+
+.container {
+    padding-left: 20px;
+    padding-right: 20px;
+
+    @media (min-width: 768px) {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip: rect(0 0 0 0);
+}

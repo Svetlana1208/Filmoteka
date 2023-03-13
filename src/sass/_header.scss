@@ -1,0 +1,170 @@
+.header {
+    width: 100%;
+    height: 230px;
+    background-size: cover;
+    background-image: url("../images/bg_320.png");
+
+    @media (min-width: 768px) {
+        height: 216px;
+        background-image: url("../images/bg_768.png");
+    }
+
+    @media (min-width: 1280px) {
+        background-image: url("../images/bg_1280.png");
+    }
+
+        &__nav {
+            padding-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        &__box {
+            display: flex;
+            align-items: center;
+        }
+
+        &__icon {
+            width: 24px;
+            height: 24px;
+            margin-top: 3px;
+        }
+
+        &__title {
+            margin-left: 10px;
+
+            font-weight: 500;
+            font-size: 30px;
+            line-height: 35px;
+            color: var(--white-color);
+
+            @media (max-width: 767px) {
+                display: none;
+            }
+        }
+
+        &__list {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        &__item {
+
+            &:first-child {
+                margin-right: 40px;
+            }
+        }
+
+        &__link {
+            text-transform: uppercase;
+            color: var(--white-color);
+
+                &--current {
+                    position: relative;
+                
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        bottom: 0;
+        
+                        display: block;
+                        width: 100%;
+                        height: 3px;
+        
+                        background-color: var(--red-color);
+                    }
+                }
+        }
+}
+
+.search {
+    position: relative;
+
+    width: 280px;
+    height: 20px;
+    margin-top: 54px;
+    margin-left: auto;
+    margin-right: auto;
+
+    border-bottom: 0.5px solid var(--white-color);
+
+    @media (min-width: 768px) {
+        width: 336px;
+        margin-top: 40px;
+    }
+
+    @media (min-width: 1280px) {
+        width: 394px;
+    }
+
+        &__input {
+            width: 265px;
+            padding: 0 0 4px 1px;
+        
+            font-family: 'Roboto';
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 16px;
+
+            color: var(--white-color);
+            background-color: transparent;
+            border: none;
+        
+            &::placeholder {                
+                font-family: 'Roboto';
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 16px;
+    
+                color: var(--white-color);
+            }
+
+            @media (min-width: 768px) {
+                width: 320px;
+            }
+        
+            @media (min-width: 1280px) {
+                width: 380px;
+            }
+        
+        }
+
+        &__btn {
+            position: absolute;
+            bottom: 6px;
+            right: 0;
+
+            width: 12px;
+            height: 12px;
+
+            background-color: transparent;
+            border: none;
+
+        }
+
+        &__icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+
+            width: 12px;
+            height: 12px;
+        }
+
+        &__info {
+            margin-top: 16px;
+
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 16px;
+
+            color: var(--red-color);
+
+            @media (min-width: 768px) {
+                text-align: center;
+            }
+        }
+}
+
