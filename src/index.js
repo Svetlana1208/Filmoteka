@@ -3,56 +3,44 @@
 let form;
 // let searchQuery;
 let markup;
-// let totalPages;
 const key = '4273054ff6f056d7541ef873941254f6';
 let url;
 let genres;
-
-let paramsPages = {
-    page: 0,
-    perPage: 20
-};
+let page = 1;
+const perPage = 20;
+let dataPopular;
+let pagesCount;
 
 const refs = {
     form: document.querySelector('#search__form'),
     gallery: document.querySelector('.gallery'),
     searchInfo: document.querySelector('#search__info'),
-    btnLoadMore: document.querySelector('.load-more'),
+    previousPages: document.querySelector('.pagination__previousPages'),
+    firstPage: document.querySelector('.pagination__firstPage'),
+    secondPage: document.querySelector('.pagination__secondPage'),
+    thirdPage: document.querySelector('.pagination__thirdPage'),
+    fourthPage: document.querySelector('.pagination__fourthPage'),
+    fifthPage: document.querySelector('.pagination__fifthPage'),
+    nextPages: document.querySelector('.pagination__nextPages'),
 }
 
 // refs.form.addEventListener('submit', onSearch);
 // refs.btnLoadMore.addEventListener('click', searchNext);
+refs.previousPages.addEventListener('click', updatePagination);
+refs.secondPage.addEventListener('click', downloadSecondPage);
+refs.thirdPage.addEventListener('click', downloadThirdPage);
+refs.fourthPage.addEventListener('click', downloadFourthPage);
+refs.fifthPage.addEventListener('click', downloadFifthPage);
+
+
+firstDownload();
 
 
 
 
-fetchRequestGenres().then(resp => {
-    const genresList = {};
-    
-    for (gen of resp.genres) {
-        genresList[gen.id] = gen.name;
-    }
 
-    fetchRequestPopular().then(result => {
-        let releaseYear;
-
-        for (pop of result.results) {
-            for (let i = 0; i < pop.genre_ids.length; i+=1) {
-                pop.genre_ids[i] = genresList[pop.genre_ids[i]];
-
-                releaseYear = pop.release_date.slice(0, 4);
-                pop.release_date = releaseYear;
-            }
-        };
-
-        onMarkUp(result)})
-    .catch((error) => console.log(error));
-})
-.catch((error) => console.log(error));
-
-
-function fetchRequestGenres() {
-    return fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`).then(
+async function fetchRequestGenres() {
+    return await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`).then(
     (response) => {
       if (!response.ok) {
         throw new Error(response.status);
@@ -62,18 +50,38 @@ function fetchRequestGenres() {
   );
 }
 
-function fetchRequestPopular() {
-//    url = `https://api.themoviedb.org/3/trending/movie/day?api_key=${key}`
-   
-   return fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${key}`).then(
+async function fetchRequestPopular() {  
+   return await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${key}&page=${page}`).then(
     (response) => {
       if (!response.ok) {
         throw new Error(response.status);
       }
-      return response.json();
+      const data = response.json();
+      return data;
     }
-  );
+  )  
 }
+
+function displayPagination() {
+    refs.firstPage.textContent = page;
+    refs.firstPage.classList.add('is-active');
+    refs.secondPage.textContent = page + 1;
+    refs.thirdPage.textContent = page + 2;
+    refs.fourthPage.textContent = page + 3;
+    refs.fifthPage.textContent = page + 4;
+}
+
+
+
+
+
+function firstDownload() {
+    downloadPage();
+    displayPagination();
+}
+
+
+
 
 function onSearch(e) {
     e.preventDefault();
@@ -98,21 +106,88 @@ function onSearch(e) {
 function onMarkUp(result) {
     markup = result.results.map(card =>
         `<li class="gallery__item">
-                <div class="film__box">
-                    <picture class="film__poster">
-                        <img src="https://image.tmdb.org/t/p/w300${card.poster_path}" alt="poster" width="280" height="402">
-                    </picture>
-                </div>
-                <h3 class="film__title">${card.original_title}</h3>
-                <p class="film__characteristics">${card.genre_ids.join(", ")} | ${card.release_date}</p>
+            <img class="film__poster" src="https://image.tmdb.org/t/p/w500${card.poster_path}" alt="poster">
+            <h3 class="film__title">${card.original_title}</h3>
+            <p class="film__characteristics">${card.genre_ids.join(", ")} | ${card.release_date}</p>
         </li>`)
         .join("");
 
         refs.gallery.insertAdjacentHTML('beforeend', markup);
-        refs.btnLoadMore.classList.remove('is-hidden');
 
-        paramsPages.page += 1;
+        page += 1;
 }
+
+
+
+
+function downloadPage() {
+    fetchRequestGenres().then(resp => {
+    const genresList = {};
+    
+    for (gen of resp.genres) {
+        genresList[gen.id] = gen.name;
+    }
+
+    fetchRequestPopular().then(result => {
+        dataPopular = result;
+        pagesCount = dataPopular.total_pages;
+        console.log(dataPopular);
+        let releaseYear;
+
+        for (pop of dataPopular.results) {
+            for (let i = 0; i < pop.genre_ids.length; i+=1) {
+                pop.genre_ids[i] = genresList[pop.genre_ids[i]];
+
+                releaseYear = pop.release_date.slice(0, 4);
+                pop.release_date = releaseYear;
+            }
+        };
+
+        onMarkUp(dataPopular);
+    })
+    .catch((error) => console.log(error));
+})
+.catch((error) => console.log(error));
+}
+
+
+
+
+
+
+function updatePagination() {
+}
+
+
+
+function downloadSecondPage() {
+    refs.gallery.innerHTML="";
+    downloadPage();
+    refs.firstPage.classList.remove('is-active');
+    refs.secondPage.classList.add('is-active');
+}
+
+function downloadThirdPage() {
+    refs.gallery.innerHTML="";
+    downloadPage();
+    refs.secondPage.classList.remove('is-active');
+    refs.thirdPage.classList.add('is-active');
+}
+
+function downloadFourthPage() {
+    refs.gallery.innerHTML="";
+    downloadPage();
+    refs.thirdPage.classList.remove('is-active');
+    refs.fourthPage.classList.add('is-active');
+}
+
+function downloadFifthPage() {
+    refs.gallery.innerHTML="";
+    downloadPage();
+    refs.fourthPage.classList.remove('is-active');
+    refs.fifthPage.classList.add('is-active');
+}
+
 
 {/* <img src="https://image.tmdb.org/t/p/w280${card.poster_path}" alt="poster"> */}
 
