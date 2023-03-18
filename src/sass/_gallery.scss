@@ -124,19 +124,37 @@
 
 .pagination {
     padding-top: 40px;
-    
-    &__list {
-        margin-left: auto;
-        margin-right: auto;
-    
-        width: 280px;
-        height: 40px;
-        display: flex;
+    padding-bottom: 60px;
+    margin-left: auto;
+    margin-right: auto;
 
+    width: 280px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+
+    @media (min-width: 768px) {
+        width: 440px;
+        height: 40px;
+    }
+    
+    &__previous,
+    &__next {
+        display: flex;
     }
 
-    &__previousPages, &__nextPages, &__firstPage, &__secondPage, &__thirdPage, &__fourthPage, &__fifthPage {
-        width: 40px;
+    &__current {
+        display: flex;
+    }
+
+    &__previousPage,
+    &__firstPage,
+    &__dotsLess,
+    &__dotsMore,
+    &__lastPage,
+    &__nextPage,
+    &__item 
+    {   width: 40px;
         height: 40px;
 
         display: flex;
@@ -145,30 +163,42 @@
 
         line-height: 16px;
         color: var(--black-color);
-        
     }
 
-    &__previousPages, &__nextPages {
+    &__previousPage, &__nextPage {
         position: relative;
-        background-color: var(--background-footer);
+        background-color: var(--secondary-color);
         background-size: 16px;
         background-position: center;
         background-repeat: no-repeat;
+        border: none;
     }
 
-    &__previousPages {
+    &__previousPage {
+        margin-right: 3px;
         background-image: url(../images/arrow_left.svg);
     }
 
-    &__nextPages {
+    &__nextPage {
+        margin-left: 3px;
         background-image: url(../images/arrow_right.svg); 
     }
 
+    &__item--active {
+        color: var(--white-color);
+        background-color: var(--red-color);
+        border: 2px solid var(--black-color);
+    }
 }
 
 .is-active {
     color: var(--white-color);
     background-color: var(--secondary-color);
+}
+
+.disabled {
+    background-color: var(--background-footer);
+ 
 }
 
 .arrow {
@@ -180,3 +210,4 @@
 
     transform: translate(-50%, -50%);
 }
+

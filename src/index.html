@@ -52,25 +52,29 @@
     
     <main>
         <section class="main">
+            <div class="pagination">
+                <button class="pagination__previousPage" id="prev-button" aria-label="Previous page" title="Previous page"></button>
+                <!-- <ul class="pagination__previous">
+                    <li class="pagination__previousPage"></li>
+                    <li class="pagination__firstPage"></li>
+                    <li class="pagination__dotsLess">...</li>
+                </ul> -->
+                <ul class="pagination__current"></ul>
+                <!-- <ul class="pagination__next">
+                    <li class="pagination__dotsMore">...</li>
+                    <li class="pagination__lastPage"></li>
+                    <li class="pagination__nextPage">
+                </ul> -->
+                <button class="pagination__nextPage" id="next-button" aria-label="Next page" title="Next page"></button>
+            </div>
+
             <h2 class="visuallyHidden">Gallery</h2>
 
             <div class="container">
-                <ul class="gallery">
-                </ul>
+                <ul class="gallery"></ul>
             </div>
 
-            <div class="pagination">
-                <ul class="pagination__list">
-                    <li class="pagination__previousPages"></li>
-                    <li class="pagination__firstPage"></li>
-                    <li class="pagination__secondPage"></li>
-                    <li class="pagination__thirdPage"></li>
-                    <li class="pagination__fourthPage"></li>
-                    <li class="pagination__fifthPage"></li>
-                    <li class="pagination__nextPages">
-                    </li>
-                </ul>
-            </div>
+
         </section>    
     </main>
 
@@ -89,6 +93,7 @@
         </div>
     </footer>
 
-    <script type="module" src="index.js"></script>
+    <script type="module" src="index1.js"></script>
+    <!-- <script type="module" src="index.js"></script> -->
 </body>
 </html>

@@ -327,15 +327,27 @@ body, h1, h2, h3 {
 
 .pagination {
   padding-top: 40px;
-}
-.pagination__list {
+  padding-bottom: 60px;
   margin-left: auto;
   margin-right: auto;
   width: 280px;
   height: 40px;
   display: flex;
+  justify-content: center;
 }
-.pagination__previousPages, .pagination__nextPages, .pagination__firstPage, .pagination__secondPage, .pagination__thirdPage, .pagination__fourthPage, .pagination__fifthPage {
+@media (min-width: 768px) {
+  .pagination {
+    width: 440px;
+    height: 40px;
+  }
+}
+.pagination__previous, .pagination__next {
+  display: flex;
+}
+.pagination__current {
+  display: flex;
+}
+.pagination__previousPage, .pagination__firstPage, .pagination__dotsLess, .pagination__dotsMore, .pagination__lastPage, .pagination__nextPage, .pagination__item {
   width: 40px;
   height: 40px;
   display: flex;
@@ -344,23 +356,35 @@ body, h1, h2, h3 {
   line-height: 16px;
   color: var(--black-color);
 }
-.pagination__previousPages, .pagination__nextPages {
+.pagination__previousPage, .pagination__nextPage {
   position: relative;
-  background-color: var(--background-footer);
+  background-color: var(--secondary-color);
   background-size: 16px;
   background-position: center;
   background-repeat: no-repeat;
+  border: none;
 }
-.pagination__previousPages {
+.pagination__previousPage {
+  margin-right: 3px;
   background-image: url(../images/arrow_left.svg);
 }
-.pagination__nextPages {
+.pagination__nextPage {
+  margin-left: 3px;
   background-image: url(../images/arrow_right.svg);
+}
+.pagination__item--active {
+  color: var(--white-color);
+  background-color: var(--red-color);
+  border: 2px solid var(--black-color);
 }
 
 .is-active {
   color: var(--white-color);
   background-color: var(--secondary-color);
+}
+
+.disabled {
+  background-color: var(--background-footer);
 }
 
 .arrow {
