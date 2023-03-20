@@ -1,6 +1,7 @@
 :root {
   --primary-color: #FF6B01;
   --secondary-color: #FF6B08;
+  --light-orange-color: #f0a56f;
   --black-color: #000000;
   --white-color: #FFFFFF;
   --grey-color: #545454;
@@ -341,13 +342,11 @@ body, h1, h2, h3 {
     height: 40px;
   }
 }
-.pagination__previous, .pagination__next {
-  display: flex;
-}
 .pagination__current {
   display: flex;
 }
-.pagination__previousPage, .pagination__firstPage, .pagination__dotsLess, .pagination__dotsMore, .pagination__lastPage, .pagination__nextPage, .pagination__item {
+.pagination__previousPage, .pagination__nextPage {
+  position: relative;
   width: 40px;
   height: 40px;
   display: flex;
@@ -355,10 +354,7 @@ body, h1, h2, h3 {
   align-items: center;
   line-height: 16px;
   color: var(--black-color);
-}
-.pagination__previousPage, .pagination__nextPage {
-  position: relative;
-  background-color: var(--secondary-color);
+  background-color: var(--light-orange-color);
   background-size: 16px;
   background-position: center;
   background-repeat: no-repeat;
@@ -372,15 +368,10 @@ body, h1, h2, h3 {
   margin-left: 3px;
   background-image: url(../images/arrow_right.svg);
 }
-.pagination__item--active {
-  color: var(--white-color);
-  background-color: var(--red-color);
-  border: 2px solid var(--black-color);
-}
 
-.is-active {
+.pagination-number.is-active {
   color: var(--white-color);
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
 }
 
 .disabled {
@@ -394,6 +385,18 @@ body, h1, h2, h3 {
   width: 16px;
   height: 16px;
   transform: translate(-50%, -50%);
+}
+
+.pagination-number {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 16px;
+  color: var(--black-color);
+  border: none;
+  background-color: var(--white-color);
 }
 
 .footer {
