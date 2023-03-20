@@ -1,13 +1,15 @@
 const key = '4273054ff6f056d7541ef873941254f6';
 const genresList = {};
 let currentPage;
-let page;
+let page = 1;
+let lastPage;
 
 const refs = {
     gallery: document.querySelector('.gallery'),
     paginationNumbers: document.querySelector('.pagination__current'),
     nextButton: document.getElementById("next-button"),
     prevButton: document.getElementById("prev-button"),
+    lastPage: document.querySelector(".pagination__lastPage"),
 }
 
 
@@ -16,10 +18,21 @@ window.addEventListener("load", firstDownload());
 function firstDownload() {    
     getPaginationNumbers(page);
 
+    document.querySelectorAll(".pagination-number").forEach((button) => {
+        const pageIndex = Number(button.getAttribute("page-index"));
+
+        if (pageIndex) {
+          button.addEventListener("click", () => {
+            setCurrentPage(pageIndex);
+          });
+        }
+      });
+
     fetchRequestGenres()
     .then(dataGenres => makeGenresList(dataGenres))
     .then(setCurrentPage(1));
     
+
 
     refs.prevButton.addEventListener("click", () => {
         updatePaginationPrev(currentPage - 1);
@@ -31,36 +44,45 @@ function firstDownload() {
         setCurrentPage(currentPage + 1);
     });
 
-    document.querySelectorAll(".pagination-number").forEach((button) => {
-        const pageIndex = Number(button.getAttribute("page-index"));
-        if (pageIndex) {
-          button.addEventListener("click", () => {
-            setCurrentPage(pageIndex);
-          });
-        }
-      });
+
+
+    // refs.lastPage.innerHTML = data.total_pages;
+    // lastPage = Number(refs.lastPage.getAttribute("page-index"));
+    // // console.log(lastPage);
+    // refs.lastPage.addEventListener('click', setCurrentPage(lastPage));
+
+
+
 }
 
 async function fetchRequestGenres() {
     const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`);
     const dataGenres = await response.json();
+    console.log(2);
     return dataGenres;
+
 }
 
 function makeGenresList(dataGenres) {
     for (genre of dataGenres.genres) {
         genresList[genre.id] = genre.name;
     }
+    console.log(3);
+
 }
 
 async function fetchRequestPopular(page) {
     const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${key}&page=${page}`);
     const data = await response.json();
+    console.log(5);
+
     return data;
 }
 
 function updateDescription (data) {
     let releaseYear;
+
+    console.log(6);
 
     for (pop of data.results) {
         for (let i = 0; i < pop.genre_ids.length; i+=1) {
@@ -82,9 +104,12 @@ function onMarkUp(data) {
         .join("");
 
         refs.gallery.insertAdjacentHTML('beforeend', markup);
+        console.log(7);
+
 }
 
 async function setCurrentPage(page) {
+    console.log("set")
     currentPage = page;
     handleActivePageNumber();
 
@@ -93,6 +118,7 @@ async function setCurrentPage(page) {
     refs.gallery.innerHTML="";
     onMarkUp(data);
     buttonsStatus(data);
+
 }
 
 function appendPageNumber(index) {
@@ -104,10 +130,25 @@ function appendPageNumber(index) {
     refs.paginationNumbers.appendChild(pageNumber);
 }
 
-function getPaginationNumbers() {
-    for (let i = 0; i < 5; i += 1) {
-        appendPageNumber(i + 1);
-      }
+function getPaginationNumbers(page) {
+    for (let i = page; i <= 5; i += 1) {
+        appendPageNumber(i);
+    }
+    console.log(1);
+}
+
+function handleActivePageNumber() {
+    document.querySelectorAll(".pagination-number").forEach((button) => {
+        button.classList.remove("is-active");
+        
+        const pageIndex = Number(button.getAttribute("page-index"));
+        if (pageIndex == currentPage) {
+          button.classList.add("is-active");
+        }
+      });
+    
+      console.log(4);
+
 }
 
 function getPaginationNumbersNext(page) {
@@ -124,16 +165,6 @@ function getPaginationNumbersPrev(page) {
       }
 }
 
-function handleActivePageNumber() {
-    document.querySelectorAll(".pagination-number").forEach((button) => {
-        button.classList.remove("is-active");
-        
-        const pageIndex = Number(button.getAttribute("page-index"));
-        if (pageIndex == currentPage) {
-          button.classList.add("is-active");
-        }
-      });
-}
 
 function disableButton(button) {
     button.classList.add("disabled");
@@ -189,4 +220,7 @@ function updatePaginationPrev(page) {
             }
           });    
     }
+}
+
+function qqq(data) {
 }
