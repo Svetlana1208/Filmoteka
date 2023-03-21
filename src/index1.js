@@ -12,36 +12,53 @@ const refs = {
     lastPage: document.querySelector(".pagination__lastPage"),
 }
 
-refs.prevButton.addEventListener("click", () => {
-    updatePaginationPrev(currentPage - 1);
-    setCurrentPage(currentPage - 1);
-});
-
-refs.nextButton.addEventListener("click", () => {
-    updatePaginationNext(currentPage + 1);
-    setCurrentPage(currentPage + 1);
-});
-
-refs.lastPage.addEventListener('click', () => {
-    setCurrentPage(lastPage);
-});
-
 
 window.addEventListener("load", firstDownload());
     
-function firstDownload() {
+function firstDownload() {    
+    getPaginationNumbers(page);
+
+    document.querySelectorAll(".pagination-number").forEach((button) => {
+        const pageIndex = Number(button.getAttribute("page-index"));
+
+        if (pageIndex) {
+          button.addEventListener("click", () => {
+            setCurrentPage(pageIndex);
+          });
+        }
+      });
+
     fetchRequestGenres()
-    .then(dataGenres => {
-        makeGenresList(dataGenres);
-        getPaginationNumbers(page);
-        addEventListenerAllBtns();
-        setCurrentPage(1);
-    })
+    .then(dataGenres => makeGenresList(dataGenres))
+    .then(setCurrentPage(1));
+    
+
+
+    refs.prevButton.addEventListener("click", () => {
+        updatePaginationPrev(currentPage - 1);
+        setCurrentPage(currentPage - 1);
+    });
+
+    refs.nextButton.addEventListener("click", () => {
+        updatePaginationNext(currentPage + 1);
+        setCurrentPage(currentPage + 1);
+    });
+
+
+
+    // refs.lastPage.innerHTML = data.total_pages;
+    // lastPage = Number(refs.lastPage.getAttribute("page-index"));
+    // // console.log(lastPage);
+    // refs.lastPage.addEventListener('click', setCurrentPage(lastPage));
+
+
+
 }
 
 async function fetchRequestGenres() {
     const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`);
     const dataGenres = await response.json();
+    console.log(2);
     return dataGenres;
 
 }
@@ -50,18 +67,24 @@ function makeGenresList(dataGenres) {
     for (genre of dataGenres.genres) {
         genresList[genre.id] = genre.name;
     }
+    console.log(3);
+
 }
 
 async function fetchRequestPopular(page) {
     const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${key}&page=${page}`);
     const data = await response.json();
+    console.log(5);
+
     return data;
 }
 
 function updateDescription (data) {
     let releaseYear;
+
+    console.log(6);
+
     for (pop of data.results) {
-        if (pop.genre_ids) {
         for (let i = 0; i < pop.genre_ids.length; i+=1) {
             pop.genre_ids[i] = genresList[pop.genre_ids[i]];
 
@@ -69,11 +92,9 @@ function updateDescription (data) {
             pop.release_date = releaseYear;
         }
     }
-    }
 }
 
 function onMarkUp(data) {
-    refs.gallery.innerHTML="";
     markup = data.results.map(card =>
         `<li class="gallery__item">
             <img class="film__poster" src="https://image.tmdb.org/t/p/w500${card.poster_path}" alt="poster">
@@ -83,20 +104,21 @@ function onMarkUp(data) {
         .join("");
 
         refs.gallery.insertAdjacentHTML('beforeend', markup);
+        console.log(7);
+
 }
 
-function setCurrentPage(page) {
+async function setCurrentPage(page) {
+    console.log("set")
     currentPage = page;
+    handleActivePageNumber();
 
-    fetchRequestPopular(page)
-    .then(data => {
-        updateDescription(data);
-        onMarkUp(data);
-        updateLastPage(data);
-        buttonsStatus(data);
-        handleActivePageNumber();
-        return data;
-    })
+    const data = await fetchRequestPopular(page);
+    updateDescription(data);
+    refs.gallery.innerHTML="";
+    onMarkUp(data);
+    buttonsStatus(data);
+
 }
 
 function appendPageNumber(index) {
@@ -112,6 +134,7 @@ function getPaginationNumbers(page) {
     for (let i = page; i <= 5; i += 1) {
         appendPageNumber(i);
     }
+    console.log(1);
 }
 
 function handleActivePageNumber() {
@@ -123,17 +146,9 @@ function handleActivePageNumber() {
           button.classList.add("is-active");
         }
       });
-}
+    
+      console.log(4);
 
-function addEventListenerAllBtns() {
-    document.querySelectorAll(".pagination-number").forEach((button) => {
-        const pageIndex = Number(button.getAttribute("page-index"));
-        if (pageIndex) {
-          button.addEventListener("click", () => {
-            setCurrentPage(pageIndex);
-          });
-        }
-    });
 }
 
 function getPaginationNumbersNext(page) {
@@ -149,6 +164,7 @@ function getPaginationNumbersPrev(page) {
         appendPageNumber(i + 1);
       }
 }
+
 
 function disableButton(button) {
     button.classList.add("disabled");
@@ -167,7 +183,7 @@ function buttonsStatus(data) {
         enableButton(refs.prevButton);
     }
 
-    if (currentPage === lastPage) {
+    if (data.total_pages === currentPage) {
         disableButton(refs.nextButton);
     } else {
         enableButton(refs.nextButton);
@@ -204,13 +220,5 @@ function updatePaginationPrev(page) {
             }
           });    
     }
-}
-
-function updateLastPage(data) {
-    lastPage = data.total_pages - 1;
-    refs.lastPage.className = "pagination-number";
-    refs.lastPage.setAttribute("page-index", lastPage);
-    refs.lastPage.setAttribute("aria-label", "Page " + lastPage);
-    refs.lastPage.innerHTML = lastPage;
 }
 
