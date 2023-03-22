@@ -52,11 +52,18 @@ async function fetchRequestGenres() {
     return dataGenres;
 }
 
-function makeGenresList(dataGenres) {
-    for (genre of dataGenres.genres) {
-        genresList[genre.id] = genre.name;
-    }
+async function makeGenresList() {
+    try {
+        const dataGenresConst = await fetchRequestGenres();
+        for (genre of dataGenresConst.genres) {
+            genresList[genre.id] = genre.name;
+        }
+        
+    } catch (error) {console.log(error.message);}
 }
+
+
+
 
 async function fetchRequestPopular(page) {
     const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${key}&page=${page}`);
