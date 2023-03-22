@@ -53,6 +53,7 @@ async function fetchRequestGenres() {
 }
 
 function makeGenresList(dataGenres) {
+    console.log(dataGenres);
     for (genre of dataGenres.genres) {
         genresList[genre.id] = genre.name;
     }
