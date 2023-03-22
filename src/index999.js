@@ -35,39 +35,33 @@ refs.lastPage.addEventListener('click', downloadLastPage);
 
 
 window.addEventListener("load", firstDownload());
-
     
 function firstDownload() {
-    currentPage = page;
-    getPaginationNumbers(page);
-    addEventListenerAllBtns();
-    buttonsStatus();
-    handleActivePageNumber();
-
-    fetchRequestPopular(page)
-        .then(data => {
-            onMarkUp(data);
-            updateFirstLastPage(data);  
+    fetchRequestGenres()
+    .then(dataGenres => {
+        makeGenresList(dataGenres);
+        getPaginationNumbers(page);
+        addEventListenerAllBtns();
+        setCurrentPage(1);
     })
 }
 
-async function fetchRequestPopular(page) {
-    const genresResponse = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`);
-    const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${key}&page=${page}`);
-
-    const dataGenres = await genresResponse.json();
-    const data = await response.json();
-
-    makeGenresList(dataGenres);
-    updateDescription(data);
-
-    return data;
+async function fetchRequestGenres() {
+    const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`);
+    const dataGenres = await response.json();
+    return dataGenres;
 }
 
 function makeGenresList(dataGenres) {
     for (genre of dataGenres.genres) {
         genresList[genre.id] = genre.name;
     }
+}
+
+async function fetchRequestPopular(page) {
+    const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${key}&page=${page}`);
+    const data = await response.json();
+    return data;
 }
 
 function updateDescription (data) {
@@ -99,12 +93,15 @@ function onMarkUp(data) {
 
 function setCurrentPage(page) {
     currentPage = page;
+
     fetchRequestPopular(page)
-        .then(data => {
-            onMarkUp(data);
-            updateFirstLastPage(data);
-            buttonsStatus();
-            handleActivePageNumber();
+    .then(data => {
+        updateDescription(data);
+        onMarkUp(data);
+        updateFirstLastPage(data);
+        buttonsStatus();
+        handleActivePageNumber();
+        return data;
     })
 }
 
@@ -138,6 +135,31 @@ function handleActivePageNumber() {
       });
 }
 
+function addEventListenerAllBtns() {
+    document.querySelectorAll(".pagination-number").forEach((button) => {
+        const pageIndex = Number(button.getAttribute("page-index"));
+        if (pageIndex) {
+          button.addEventListener("click", () => {
+            setCurrentPage(pageIndex);
+          });
+        }
+    });
+}
+
+function getPaginationNumbersNext(page) {
+    refs.paginationNumbers.innerHTML = "";
+    for (let i = page; i < page + 5; i += 1) {
+        appendPageNumber(i);
+      }
+}
+
+function getPaginationNumbersPrev(page) {
+    refs.paginationNumbers.innerHTML = "";
+    for (let i = page - 5; i < page; i += 1) {
+        appendPageNumber(i + 1);
+      }
+}
+
 function disableButton(button) {
     button.classList.add("disabled");
     button.setAttribute("disabled", true);
@@ -161,24 +183,6 @@ function buttonsStatus() {
         enableButton(refs.nextButton);
     }
 };
-
-function addEventListenerAllBtns() {
-    document.querySelectorAll(".pagination-number").forEach((button) => {
-        const pageIndex = Number(button.getAttribute("page-index"));
-        if (pageIndex) {
-          button.addEventListener("click", () => {
-            setCurrentPage(pageIndex);
-          });
-        }
-    });
-}
-
-function getPaginationNumbersNext(page) {
-    refs.paginationNumbers.innerHTML = "";
-    for (let i = page; i < page + 5; i += 1) {
-        appendPageNumber(i);
-      }
-}
 
 function updatePaginationNext(page) {
     if (refs.paginationNumbers.lastElementChild === document.querySelector('.pagination-number.is-active') && Number(refs.paginationNumbers.lastElementChild.getAttribute("page-index")) !== lastPage) {
@@ -208,14 +212,7 @@ function updatePaginationNext(page) {
         refs.dotsNext.classList.add("is-hidden");
     }
 }
-
-function getPaginationNumbersPrev(page) {
-    refs.paginationNumbers.innerHTML = "";
-    for (let i = page - 5; i < page; i += 1) {
-        appendPageNumber(i + 1);
-      }
-}
-
+    
 function updatePaginationPrev(page) {
     if (refs.paginationNumbers.firstElementChild === document.querySelector('.pagination-number.is-active') && refs.paginationNumbers.firstElementChild.innerHTML !== "1") {
         getPaginationNumbersPrev(page);
