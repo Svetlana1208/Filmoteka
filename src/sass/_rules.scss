@@ -38,3 +38,10 @@ body, h1, h2, h3 {
     border: 0;
     clip: rect(0 0 0 0);
 }
+
+.pagination__dotsNext.is-hidden,
+.pagination__dotsPrev.is-hidden,
+.pagination__firstPage.is-hidden,
+.pagination__lastPage.is-hidden {
+    display: none;
+}

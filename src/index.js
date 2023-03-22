@@ -9,7 +9,10 @@ const refs = {
     paginationNumbers: document.querySelector('.pagination__current'),
     nextButton: document.getElementById("next-button"),
     prevButton: document.getElementById("prev-button"),
+    firstPage: document.querySelector(".pagination__firstPage"),
+    dotsPrev: document.querySelector(".pagination__dotsPrev"),
     lastPage: document.querySelector(".pagination__lastPage"),
+    dotsNext: document.querySelector(".pagination__dotsNext"),
 }
 
 refs.prevButton.addEventListener("click", () => {
@@ -22,9 +25,13 @@ refs.nextButton.addEventListener("click", () => {
     setCurrentPage(currentPage + 1);
 });
 
-refs.lastPage.addEventListener('click', () => {
-    setCurrentPage(lastPage);
-});
+refs.firstPage.addEventListener('click', () => {
+    firstDownload();
+    refs.lastPage.classList.remove("is-hidden");
+    refs.dotsNext.classList.remove("is-hidden");
+})
+
+refs.lastPage.addEventListener('click', downloadLastPage);
 
 
 window.addEventListener("load", firstDownload());
@@ -43,7 +50,6 @@ async function fetchRequestGenres() {
     const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`);
     const dataGenres = await response.json();
     return dataGenres;
-
 }
 
 function makeGenresList(dataGenres) {
@@ -92,8 +98,8 @@ function setCurrentPage(page) {
     .then(data => {
         updateDescription(data);
         onMarkUp(data);
-        updateLastPage(data);
-        buttonsStatus(data);
+        updateFirstLastPage(data);
+        buttonsStatus();
         handleActivePageNumber();
         return data;
     })
@@ -109,6 +115,10 @@ function appendPageNumber(index) {
 }
 
 function getPaginationNumbers(page) {
+    refs.paginationNumbers.innerHTML = "";
+    refs.firstPage.classList.add("is-hidden");
+    refs.dotsPrev.classList.add("is-hidden");
+
     for (let i = page; i <= 5; i += 1) {
         appendPageNumber(i);
     }
@@ -160,7 +170,7 @@ function enableButton(button) {
     button.removeAttribute("disabled");
 };
 
-function buttonsStatus(data) {
+function buttonsStatus() {
     if (currentPage === 1) {
         disableButton(refs.prevButton);
     } else {
@@ -175,8 +185,7 @@ function buttonsStatus(data) {
 };
 
 function updatePaginationNext(page) {
-    if (refs.paginationNumbers.lastElementChild === document.querySelector('.pagination-number.is-active')) {
-        refs.paginationNumbers.innerHTML = "";
+    if (refs.paginationNumbers.lastElementChild === document.querySelector('.pagination-number.is-active') && Number(refs.paginationNumbers.lastElementChild.getAttribute("page-index")) !== lastPage) {
         getPaginationNumbersNext(page);
 
         document.querySelectorAll(".pagination-number").forEach((button) => {
@@ -188,11 +197,24 @@ function updatePaginationNext(page) {
             }
           });    
     }
+
+    if (Number(refs.paginationNumbers.firstElementChild.getAttribute("page-index")) === 6) {
+        refs.firstPage.classList.remove("is-hidden");
+        refs.dotsPrev.classList.remove("is-hidden");
+    }
+    
+    if (Number(refs.paginationNumbers.firstElementChild.getAttribute("page-index")) === lastPage - 5) {
+        refs.dotsNext.classList.add("is-hidden");
+    }
+
+    if (Number(refs.paginationNumbers.firstElementChild.getAttribute("page-index")) === lastPage - 4) {
+        refs.lastPage.classList.add("is-hidden");
+        refs.dotsNext.classList.add("is-hidden");
+    }
 }
     
 function updatePaginationPrev(page) {
     if (refs.paginationNumbers.firstElementChild === document.querySelector('.pagination-number.is-active') && refs.paginationNumbers.firstElementChild.innerHTML !== "1") {
-        refs.paginationNumbers.innerHTML = "";
         getPaginationNumbersPrev(page);
 
         document.querySelectorAll(".pagination-number").forEach((button) => {
@@ -202,15 +224,47 @@ function updatePaginationPrev(page) {
                 setCurrentPage(pageIndex);
               });
             }
-          });    
+        });    
+    }
+
+    if (Number(refs.paginationNumbers.lastElementChild.getAttribute("page-index")) === lastPage - 5) {
+        refs.dotsNext.classList.remove("is-hidden");
+        refs.lastPage.classList.remove("is-hidden");
+    }
+
+    if (Number(refs.paginationNumbers.lastElementChild.getAttribute("page-index")) === 5) {
+        refs.firstPage.classList.add("is-hidden");
+        refs.dotsPrev.classList.add("is-hidden");
     }
 }
 
-function updateLastPage(data) {
+function updateFirstLastPage(data) {
+    firstPage = 1;
+    refs.firstPage.setAttribute("page-index", firstPage);
+    refs.firstPage.setAttribute("aria-label", "Page " + firstPage);
+    refs.firstPage.innerHTML = firstPage;
+
     lastPage = data.total_pages - 1;
-    refs.lastPage.className = "pagination-number";
     refs.lastPage.setAttribute("page-index", lastPage);
     refs.lastPage.setAttribute("aria-label", "Page " + lastPage);
     refs.lastPage.innerHTML = lastPage;
 }
 
+function downloadLastPage() {
+    setCurrentPage(lastPage);
+    refs.dotsNext.classList.add("is-hidden");
+    refs.dotsPrev.classList.remove("is-hidden");
+    refs.firstPage.classList.remove("is-hidden");
+    getPaginationNumbersPrev(currentPage);
+
+    document.querySelectorAll(".pagination-number").forEach((button) => {
+        const pageIndex = Number(button.getAttribute("page-index"));
+        if (pageIndex) {
+          button.addEventListener("click", () => {
+            setCurrentPage(pageIndex);
+          });
+        }
+    });    
+
+    refs.lastPage.classList.add("is-hidden");
+}
