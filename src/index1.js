@@ -62,9 +62,6 @@ async function makeGenresList() {
     } catch (error) {console.log(error.message);}
 }
 
-
-
-
 async function fetchRequestPopular(page) {
     const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${key}&page=${page}`);
     const data = await response.json();
@@ -98,18 +95,18 @@ function onMarkUp(data) {
         refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
-function setCurrentPage(page) {
+async function setCurrentPage(page) {
     currentPage = page;
 
-    fetchRequestPopular(page)
-    .then(data => {
+    try {
+        const data = await fetchRequestPopular(page);
         updateDescription(data);
         onMarkUp(data);
         updateFirstLastPage(data);
         buttonsStatus();
         handleActivePageNumber();
         return data;
-    })
+    } catch (error) {console.log(error.message);}
 }
 
 function appendPageNumber(index) {
