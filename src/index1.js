@@ -3,6 +3,7 @@ const genresList = {};
 let currentPage;
 let page = 1;
 let lastPage;
+let data;
 
 const refs = {
     gallery: document.querySelector('.gallery'),
@@ -36,14 +37,20 @@ refs.lastPage.addEventListener('click', downloadLastPage);
 
 window.addEventListener("load", firstDownload());
     
-function firstDownload() {
-    fetchRequestGenres()
-    .then(dataGenres => {
-        makeGenresList(dataGenres);
+async function firstDownload() {
+    try {
+        const genresList = await makeGenresList();
+        setCurrentPage(1)
+        .then(data => {
         getPaginationNumbers(page);
         addEventListenerAllBtns();
-        setCurrentPage(1);
-    })
+        onMarkUp(data);
+        updateFirstLastPage(data);
+        buttonsStatus();
+        handleActivePageNumber();
+        })
+    } catch (error) {
+        console.log(error.message);}
 }
 
 async function fetchRequestGenres() {
@@ -54,10 +61,12 @@ async function fetchRequestGenres() {
 
 async function makeGenresList() {
     try {
-        const dataGenresConst = await fetchRequestGenres();
-        for (genre of dataGenresConst.genres) {
+        const dataGenres = await fetchRequestGenres();
+        for (genre of dataGenres.genres) {
             genresList[genre.id] = genre.name;
         }
+
+        return genresList;
         
     } catch (error) {console.log(error.message);}
 }
@@ -82,7 +91,19 @@ function updateDescription (data) {
     }
 }
 
+async function setCurrentPage(page) {
+    currentPage = page;
+
+    try {
+        data = await fetchRequestPopular(page);
+        updateDescription(data);
+        console.log(data);
+        return data;
+    } catch (error) {console.log(error.message);}
+}
+
 function onMarkUp(data) {
+    console.log(data);
     refs.gallery.innerHTML="";
     markup = data.results.map(card =>
         `<li class="gallery__item">
@@ -93,21 +114,6 @@ function onMarkUp(data) {
         .join("");
 
         refs.gallery.insertAdjacentHTML('beforeend', markup);
-}
-
-async function setCurrentPage(page) {
-    currentPage = page;
-
-    try {
-        const data = await fetchRequestPopular(page);
-        updateDescription(data);
-        onMarkUp(data);
-        updateFirstLastPage(data);
-        buttonsStatus();
-        handleActivePageNumber();
-        console.log(data);
-        return data;
-    } catch (error) {console.log(error.message);}
 }
 
 function appendPageNumber(index) {
