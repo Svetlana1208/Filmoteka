@@ -61,28 +61,30 @@ async function fetchRequestPopular(page) {
     makeGenresList(dataGenres);
     updateDescription(data);
 
+    function makeGenresList(dataGenres) {
+        for (genre of dataGenres.genres) {
+            genresList[genre.id] = genre.name;
+        }
+    }
+
+    function updateDescription (data) {
+        let releaseYear;
+        for (pop of data.results) {
+            if (pop.genre_ids) {
+            for (let i = 0; i < pop.genre_ids.length; i+=1) {
+                pop.genre_ids[i] = genresList[pop.genre_ids[i]];
+    
+                releaseYear = pop.release_date.slice(0, 4);
+                pop.release_date = releaseYear;
+            }
+        }
+        }
+    }    
+    
     return data;
 }
 
-function makeGenresList(dataGenres) {
-    for (genre of dataGenres.genres) {
-        genresList[genre.id] = genre.name;
-    }
-}
 
-function updateDescription (data) {
-    let releaseYear;
-    for (pop of data.results) {
-        if (pop.genre_ids) {
-        for (let i = 0; i < pop.genre_ids.length; i+=1) {
-            pop.genre_ids[i] = genresList[pop.genre_ids[i]];
-
-            releaseYear = pop.release_date.slice(0, 4);
-            pop.release_date = releaseYear;
-        }
-    }
-    }
-}
 
 function onMarkUp(data) {
     refs.gallery.innerHTML="";
