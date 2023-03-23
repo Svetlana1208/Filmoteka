@@ -38,7 +38,7 @@ refs.lastPage.addEventListener('click', downloadLastPage);
 window.addEventListener("load", firstDownload());
     
 async function firstDownload() {
-    try {
+    // try {
         const genresList = await makeGenresList();
         setCurrentPage(1)
         .then(data => {
@@ -49,8 +49,8 @@ async function firstDownload() {
         buttonsStatus();
         handleActivePageNumber();
         })
-    } catch (error) {
-        console.log(error.message);}
+    // } catch (error) {
+    //     console.log(error.message);}
 }
 
 async function fetchRequestGenres() {
