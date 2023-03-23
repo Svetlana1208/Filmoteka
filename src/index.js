@@ -88,7 +88,7 @@ async function fetchRequestPopular(page) {
 
 function onMarkUp(data) {
     refs.gallery.innerHTML="";
-    markup = data.results.map(card =>
+    const markup = data.results.map(card =>
         `<li class="gallery__item">
             <img class="film__poster" src="https://image.tmdb.org/t/p/w500${card.poster_path}" alt="poster">
             <h3 class="film__title">${card.original_title}</h3>
