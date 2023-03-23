@@ -2,6 +2,7 @@ const key = '4273054ff6f056d7541ef873941254f6';
 const genresList = {};
 let currentPage;
 let page = 1;
+let firstPage;
 let lastPage;
 
 const refs = {
