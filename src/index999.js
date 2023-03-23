@@ -2,6 +2,7 @@ const key = '4273054ff6f056d7541ef873941254f6';
 const genresList = {};
 let currentPage;
 let page = 1;
+let firstPage;
 let lastPage;
 
 const refs = {
@@ -53,7 +54,7 @@ async function fetchRequestGenres() {
 }
 
 function makeGenresList(dataGenres) {
-    for (genre of dataGenres.genres) {
+    for (const genre of dataGenres.genres) {
         genresList[genre.id] = genre.name;
     }
 }
@@ -66,7 +67,7 @@ async function fetchRequestPopular(page) {
 
 function updateDescription (data) {
     let releaseYear;
-    for (pop of data.results) {
+    for (const pop of data.results) {
         if (pop.genre_ids) {
         for (let i = 0; i < pop.genre_ids.length; i+=1) {
             pop.genre_ids[i] = genresList[pop.genre_ids[i]];
@@ -80,7 +81,7 @@ function updateDescription (data) {
 
 function onMarkUp(data) {
     refs.gallery.innerHTML="";
-    markup = data.results.map(card =>
+    const markup = data.results.map(card =>
         `<li class="gallery__item">
             <img class="film__poster" src="https://image.tmdb.org/t/p/w500${card.poster_path}" alt="poster">
             <h3 class="film__title">${card.original_title}</h3>
