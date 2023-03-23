@@ -62,14 +62,14 @@ async function fetchRequestPopular(page) {
     updateDescription(data);
 
     function makeGenresList(dataGenres) {
-        for (genre of dataGenres.genres) {
-            genresList[genre.id] = genre.name;
+        for (const genre of dataGenres.genres) {
+           genresList[genre.id] = genre.name;
         }
     }
 
     function updateDescription (data) {
         let releaseYear;
-        for (pop of data.results) {
+        for (const pop of data.results) {
             if (pop.genre_ids) {
             for (let i = 0; i < pop.genre_ids.length; i+=1) {
                 pop.genre_ids[i] = genresList[pop.genre_ids[i]];
