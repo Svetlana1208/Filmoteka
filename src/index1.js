@@ -60,7 +60,7 @@ async function fetchRequestGenres() {
 }
 
 async function makeGenresList() {
-    try {
+    // try {
         const dataGenres = await fetchRequestGenres();
         console.log(dataGenres);
         for (genre of dataGenres.genres) {
@@ -69,7 +69,7 @@ async function makeGenresList() {
 
         return genresList;
         
-    } catch (error) {console.log(error.message);}
+    // } catch (error) {console.log(error.message);}
 }
 
 async function fetchRequestPopular(page) {
@@ -96,11 +96,11 @@ function updateDescription (data) {
 async function setCurrentPage(page) {
     currentPage = page;
 
-    try {
+    // try {
         data = await fetchRequestPopular(page);
         updateDescription(data);
         return data;
-    } catch (error) {console.log(error.message);}
+    // } catch (error) {console.log(error.message);}
 }
 
 function onMarkUp(data) {
