@@ -62,6 +62,7 @@ async function fetchRequestGenres() {
 async function makeGenresList() {
     try {
         const dataGenres = await fetchRequestGenres();
+        console.log(dataGenres);
         for (genre of dataGenres.genres) {
             genresList[genre.id] = genre.name;
         }
@@ -79,6 +80,7 @@ async function fetchRequestPopular(page) {
 
 function updateDescription (data) {
     let releaseYear;
+    console.log(data);
     for (pop of data.results) {
         if (pop.genre_ids) {
         for (let i = 0; i < pop.genre_ids.length; i+=1) {
@@ -97,7 +99,6 @@ async function setCurrentPage(page) {
     try {
         data = await fetchRequestPopular(page);
         updateDescription(data);
-        console.log(data);
         return data;
     } catch (error) {console.log(error.message);}
 }
