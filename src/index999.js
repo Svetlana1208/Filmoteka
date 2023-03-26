@@ -8,6 +8,7 @@ let searchQuery;
 let data;
 let url;
 let u;
+let posterPath;
 
 const refs = {
     gallery: document.querySelector('.gallery'),
@@ -75,6 +76,13 @@ async function fetchRequest(url) {
 function updateDescription (data) {
     let releaseYear;
     for (const movie of data.results) {
+
+        if (movie.poster_path === null) {
+            movie.posterPath = 'https://upload.wikimedia.org/wikipedia/commons/a/a1';
+            movie.poster_path = '/Out_Of_Poster.jpg';
+        } else 
+        movie.posterPath = 'https://image.tmdb.org/t/p/w500';
+
         if (movie.genre_ids) {
             for (let i = 0; i < movie.genre_ids.length; i+=1) {
                 movie.genre_ids[i] = genresList[movie.genre_ids[i]];
@@ -85,20 +93,15 @@ function updateDescription (data) {
             releaseYear = movie.release_date.slice(0, 4);
             movie.release_date = releaseYear;
         }
-        
-        if (movie.poster_path === null) {
-            movie.poster_path = 'https://upload.wikimedia.org/wikipedia/commons/a/a1/Out_Of_Poster.jpg';
-            console.log(movie);
-        }
+
     }
 }
 
 function onMarkUp(data) {
     refs.gallery.innerHTML="";
-    console.log(data);
     const markup = data.results.map(card =>
         `<li class="gallery__item">
-            <img class="film__poster" src="https://image.tmdb.org/t/p/w500${card.poster_path}" alt="poster">
+            <img class="film__poster" src="${card.posterPath}${card.poster_path}" alt="poster">
             <h3 class="film__title">${card.original_title}</h3>
             <p class="film__characteristics">${card.genre_ids.join(", ")} | ${card.release_date}</p>
         </li>`)
