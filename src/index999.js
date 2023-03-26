@@ -1,9 +1,13 @@
 const key = '4273054ff6f056d7541ef873941254f6';
+let page = 1;
 const genresList = {};
 let currentPage;
-let page = 1;
 let firstPage;
 let lastPage;
+let searchQuery;
+let data;
+let url;
+let u;
 
 const refs = {
     gallery: document.querySelector('.gallery'),
@@ -14,6 +18,7 @@ const refs = {
     dotsPrev: document.querySelector(".pagination__dotsPrev"),
     lastPage: document.querySelector(".pagination__lastPage"),
     dotsNext: document.querySelector(".pagination__dotsNext"),
+    form: document.querySelector(".search__form"),
 }
 
 refs.prevButton.addEventListener("click", () => {
@@ -26,31 +31,33 @@ refs.nextButton.addEventListener("click", () => {
     setCurrentPage(currentPage + 1);
 });
 
-refs.firstPage.addEventListener('click', () => {
-    firstDownload();
-    refs.lastPage.classList.remove("is-hidden");
-    refs.dotsNext.classList.remove("is-hidden");
-})
+refs.firstPage.addEventListener('click', downloadFirstPage);
 
 refs.lastPage.addEventListener('click', downloadLastPage);
 
+refs.form.addEventListener('submit', onSearch);
 
-window.addEventListener("load", firstDownload());
+
+getPopular();
     
-function firstDownload() {
-    fetchRequestGenres()
-    .then(dataGenres => {
-        makeGenresList(dataGenres);
-        getPaginationNumbers(page);
-        addEventListenerAllBtns();
-        setCurrentPage(1);
-    })
+async function getPopular() {
+    url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`;
+    await fetchRequestGenres();
+
+    u = `https://api.themoviedb.org/3/trending/movie/day?api_key=${key}`;
+
+    await setCurrentPage(1); 
+    
+    getPaginationNumbers();
+    addEventListenerAllBtn();
+    updateFirstLastPageBtn();
+    handleActivePageNumber();
 }
 
 async function fetchRequestGenres() {
     const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`);
     const dataGenres = await response.json();
-    return dataGenres;
+    makeGenresList(dataGenres);
 }
 
 function makeGenresList(dataGenres) {
@@ -59,28 +66,36 @@ function makeGenresList(dataGenres) {
     }
 }
 
-async function fetchRequestPopular(page) {
-    const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${key}&page=${page}`);
+async function fetchRequest(url) {
+    const response = await fetch(url);
     const data = await response.json();
     return data;
 }
 
 function updateDescription (data) {
     let releaseYear;
-    for (const pop of data.results) {
-        if (pop.genre_ids) {
-        for (let i = 0; i < pop.genre_ids.length; i+=1) {
-            pop.genre_ids[i] = genresList[pop.genre_ids[i]];
-
-            releaseYear = pop.release_date.slice(0, 4);
-            pop.release_date = releaseYear;
+    for (const movie of data.results) {
+        if (movie.genre_ids) {
+            for (let i = 0; i < movie.genre_ids.length; i+=1) {
+                movie.genre_ids[i] = genresList[movie.genre_ids[i]];
+            }
         }
-    }
+        
+        if (movie.release_date) {
+            releaseYear = movie.release_date.slice(0, 4);
+            movie.release_date = releaseYear;
+        }
+        
+        if (movie.poster_path === null) {
+            movie.poster_path = 'https://upload.wikimedia.org/wikipedia/commons/a/a1/Out_Of_Poster.jpg';
+            console.log(movie);
+        }
     }
 }
 
 function onMarkUp(data) {
     refs.gallery.innerHTML="";
+    console.log(data);
     const markup = data.results.map(card =>
         `<li class="gallery__item">
             <img class="film__poster" src="https://image.tmdb.org/t/p/w500${card.poster_path}" alt="poster">
@@ -92,18 +107,16 @@ function onMarkUp(data) {
         refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
-function setCurrentPage(page) {
+async function setCurrentPage(page) {
     currentPage = page;
+    url = `${u}&page=${page}`;
 
-    fetchRequestPopular(page)
-    .then(data => {
-        updateDescription(data);
-        onMarkUp(data);
-        updateFirstLastPage(data);
-        buttonsStatus();
-        handleActivePageNumber();
-        return data;
-    })
+    data = await fetchRequest(url);
+
+    updateDescription(data);
+    onMarkUp(data);
+    buttonsStatus();
+    handleActivePageNumber();
 }
 
 function appendPageNumber(index) {
@@ -115,14 +128,21 @@ function appendPageNumber(index) {
     refs.paginationNumbers.appendChild(pageNumber);
 }
 
-function getPaginationNumbers(page) {
-    refs.paginationNumbers.innerHTML = "";
-    refs.firstPage.classList.add("is-hidden");
-    refs.dotsPrev.classList.add("is-hidden");
-
-    for (let i = page; i <= 5; i += 1) {
-        appendPageNumber(i);
-    }
+function getPaginationNumbers() {
+        refs.paginationNumbers.innerHTML = "";
+        refs.firstPage.classList.add("is-hidden");
+        refs.dotsPrev.classList.add("is-hidden");
+    
+        if (data.total_pages >= 5) {
+            for (let i = page; i <= 5; i += 1) {
+                appendPageNumber(i);
+            }
+    
+        } else {
+            for (let i = page; i <= data.total_pages; i += 1) {
+                appendPageNumber(i);
+            }
+        }
 }
 
 function handleActivePageNumber() {
@@ -134,31 +154,6 @@ function handleActivePageNumber() {
           button.classList.add("is-active");
         }
       });
-}
-
-function addEventListenerAllBtns() {
-    document.querySelectorAll(".pagination-number").forEach((button) => {
-        const pageIndex = Number(button.getAttribute("page-index"));
-        if (pageIndex) {
-          button.addEventListener("click", () => {
-            setCurrentPage(pageIndex);
-          });
-        }
-    });
-}
-
-function getPaginationNumbersNext(page) {
-    refs.paginationNumbers.innerHTML = "";
-    for (let i = page; i < page + 5; i += 1) {
-        appendPageNumber(i);
-      }
-}
-
-function getPaginationNumbersPrev(page) {
-    refs.paginationNumbers.innerHTML = "";
-    for (let i = page - 5; i < page; i += 1) {
-        appendPageNumber(i + 1);
-      }
 }
 
 function disableButton(button) {
@@ -185,18 +180,28 @@ function buttonsStatus() {
     }
 };
 
+function addEventListenerAllBtn() {
+    document.querySelectorAll(".pagination-number").forEach((button) => {
+        const pageIndex = Number(button.getAttribute("page-index"));
+        if (pageIndex) {
+          button.addEventListener("click", () => {
+            setCurrentPage(pageIndex);
+        });
+        }
+    });
+}
+
+function getPaginationNumbersNext(page) {
+    refs.paginationNumbers.innerHTML = "";
+    for (let i = page; i < page + 5; i += 1) {
+        appendPageNumber(i);
+      }
+}
+
 function updatePaginationNext(page) {
     if (refs.paginationNumbers.lastElementChild === document.querySelector('.pagination-number.is-active') && Number(refs.paginationNumbers.lastElementChild.getAttribute("page-index")) !== lastPage) {
         getPaginationNumbersNext(page);
-
-        document.querySelectorAll(".pagination-number").forEach((button) => {
-            const pageIndex = Number(button.getAttribute("page-index"));
-            if (pageIndex) {
-              button.addEventListener("click", () => {
-                setCurrentPage(pageIndex);
-              });
-            }
-          });    
+        addEventListenerAllBtn();
     }
 
     if (Number(refs.paginationNumbers.firstElementChild.getAttribute("page-index")) === 6) {
@@ -213,19 +218,18 @@ function updatePaginationNext(page) {
         refs.dotsNext.classList.add("is-hidden");
     }
 }
-    
+
+function getPaginationNumbersPrev(page) {
+    refs.paginationNumbers.innerHTML = "";
+    for (let i = page - 5; i < page; i += 1) {
+        appendPageNumber(i + 1);
+      }
+}
+
 function updatePaginationPrev(page) {
     if (refs.paginationNumbers.firstElementChild === document.querySelector('.pagination-number.is-active') && refs.paginationNumbers.firstElementChild.innerHTML !== "1") {
         getPaginationNumbersPrev(page);
-
-        document.querySelectorAll(".pagination-number").forEach((button) => {
-            const pageIndex = Number(button.getAttribute("page-index"));
-            if (pageIndex) {
-              button.addEventListener("click", () => {
-                setCurrentPage(pageIndex);
-              });
-            }
-        });    
+        addEventListenerAllBtn();
     }
 
     if (Number(refs.paginationNumbers.lastElementChild.getAttribute("page-index")) === lastPage - 5) {
@@ -239,33 +243,52 @@ function updatePaginationPrev(page) {
     }
 }
 
-function updateFirstLastPage(data) {
+function updateFirstLastPageBtn() {
     firstPage = 1;
     refs.firstPage.setAttribute("page-index", firstPage);
     refs.firstPage.setAttribute("aria-label", "Page " + firstPage);
     refs.firstPage.innerHTML = firstPage;
 
-    lastPage = data.total_pages - 1;
+    lastPage = data.total_pages;
     refs.lastPage.setAttribute("page-index", lastPage);
     refs.lastPage.setAttribute("aria-label", "Page " + lastPage);
     refs.lastPage.innerHTML = lastPage;
 }
 
+function downloadFirstPage() {
+    setCurrentPage(1); 
+    getPaginationNumbers();
+    addEventListenerAllBtn();
+
+    refs.lastPage.classList.remove("is-hidden");
+    refs.dotsNext.classList.remove("is-hidden");
+}
+
+
 function downloadLastPage() {
     setCurrentPage(lastPage);
+    getPaginationNumbersPrev(currentPage);
+    addEventListenerAllBtn();
+
     refs.dotsNext.classList.add("is-hidden");
     refs.dotsPrev.classList.remove("is-hidden");
     refs.firstPage.classList.remove("is-hidden");
-    getPaginationNumbersPrev(currentPage);
-
-    document.querySelectorAll(".pagination-number").forEach((button) => {
-        const pageIndex = Number(button.getAttribute("page-index"));
-        if (pageIndex) {
-          button.addEventListener("click", () => {
-            setCurrentPage(pageIndex);
-          });
-        }
-    });    
-
     refs.lastPage.classList.add("is-hidden");
 }
+
+async function onSearch(e) {
+    e.preventDefault();
+    refs.gallery.innerHTML = "";
+    form = e.currentTarget;
+    searchQuery = form.elements.searchQuery.value;
+    page = 1;
+    u = `https://api.themoviedb.org/3/search/movie?api_key=${key}&query=${searchQuery}`;
+    
+    await setCurrentPage(page);
+
+    getPaginationNumbers();
+    addEventListenerAllBtn();
+    updateFirstLastPageBtn();
+    handleActivePageNumber();
+}
+
