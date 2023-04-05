@@ -1,21 +1,15 @@
 import {refsMyLib} from "./varsMyLib";
 import {refs} from "./vars";
 
-import addToWatched from "./watched";
-import addToQueue from "./queue";
-
-let movie;
-let movieIndex;
-
 const modal = (data) => {
     document.querySelectorAll(".gallery__item").forEach((card) => {
 
         card.addEventListener("click", () => {
-            movieIndex = Number(card.getAttribute("movie-index"));
+            const movieIndex = Number(card.getAttribute("movie-index"));
 
             data.forEach((item) => {
                 if (item.id === movieIndex) {
-                    movie = item;
+                    const movie = item;
 
                     const markupCard = 
                         `<article class="movie">
@@ -58,8 +52,20 @@ const modal = (data) => {
                         refsMyLib.modal.classList.remove("is-hidden");
     
                         document.body.classList.add("body-modal-open");
-                        document.querySelector("[data-add-to-watched]").addEventListener('click', addToWatched());
-                        document.querySelector("[data-add-to-queue]").addEventListener('click', addToQueue());
+                        document.querySelector("[data-add-to-watched]").addEventListener('click', addToWatched);
+                        document.querySelector("[data-add-to-queue]").addEventListener('click', addToQueue);
+
+                        function addToWatched() {
+                            const oldList = JSON.parse(localStorage.getItem('watchedList')) || [];
+                            oldList.push(movie);
+                            localStorage.setItem('watchedList', JSON.stringify(oldList));
+                        }
+                        
+                        function addToQueue() {
+                            const oldList = JSON.parse(localStorage.getItem('queue')) || [];
+                            oldList.push(movie);
+                            localStorage.setItem('queue', JSON.stringify(oldList));
+                        }    
                 }
             })
         });
@@ -67,5 +73,3 @@ const modal = (data) => {
 }
 
 export default modal;
-export {movie};
-export {movieIndex};
