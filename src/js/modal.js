@@ -58,8 +58,8 @@ const modal = (data) => {
                         refsMyLib.modal.classList.remove("is-hidden");
     
                         document.body.classList.add("body-modal-open");
-                        document.querySelector("[data-add-to-watched]").addEventListener('click', addToWatched);
-                        document.querySelector("[data-add-to-queue]").addEventListener('click', addToQueue);
+                        document.querySelector("[data-add-to-watched]").addEventListener('click', addToWatched());
+                        document.querySelector("[data-add-to-queue]").addEventListener('click', addToQueue());
                 }
             })
         });

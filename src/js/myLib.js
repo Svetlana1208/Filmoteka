@@ -11,7 +11,6 @@ let currentDataAll;
 let parsedQueueList;
 
 
-
 refsMyLib.watchedBtn.addEventListener('click', getWatched);
 refsMyLib.queueBtn.addEventListener('click', getQueue);
 refsMyLib.closeModalBtn.addEventListener('click', () => {
@@ -43,6 +42,12 @@ getWatched();
 function getWatched() {
     refsMyLib.watchedBtn.classList.add("is-active");
     refsMyLib.queueBtn.classList.remove("is-active");
+    refsMyLib.nextButton.classList.add("is-hidden");
+    refsMyLib.prevButton.classList.add("is-hidden");
+    refsMyLib.lastPage.classList.add("is-hidden");
+    refsMyLib.dotsNext.classList.add("is-hidden");
+    refsMyLib.firstPage.classList.add("is-hidden");
+    refsMyLib.dotsPrev.classList.add("is-hidden");
 
     const savedWatchedList = localStorage.getItem("watchedList");
     parsedWatchedList = JSON.parse(savedWatchedList);
@@ -55,6 +60,12 @@ function getWatched() {
 function getQueue() {
     refsMyLib.watchedBtn.classList.remove("is-active");
     refsMyLib.queueBtn.classList.add("is-active");
+    refsMyLib.nextButton.classList.add("is-hidden");
+    refsMyLib.prevButton.classList.add("is-hidden");
+    refsMyLib.lastPage.classList.add("is-hidden");
+    refsMyLib.dotsNext.classList.add("is-hidden");
+    refsMyLib.firstPage.classList.add("is-hidden");
+    refsMyLib.dotsPrev.classList.add("is-hidden");
 
     const savedQueueList = localStorage.getItem("queue");
     parsedQueueList = JSON.parse(savedQueueList);
