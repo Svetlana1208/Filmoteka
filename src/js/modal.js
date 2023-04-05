@@ -10,7 +10,6 @@ const modal = (data) => {
             data.forEach((item) => {
                 if (item.id === movieIndex) {
                     const movie = item;
-
                     const markupCard = 
                         `<article class="movie">
                             <div>
@@ -57,14 +56,22 @@ const modal = (data) => {
 
                         function addToWatched() {
                             const oldList = JSON.parse(localStorage.getItem('watchedList')) || [];
-                            oldList.push(movie);
-                            localStorage.setItem('watchedList', JSON.stringify(oldList));
+                            if (oldList.some(oldList => oldList.id === movie.id)) {
+                                return;
+                            } else {
+                                oldList.push(movie);
+                                localStorage.setItem('watchedList', JSON.stringify(oldList)); 
+                            }       
                         }
                         
                         function addToQueue() {
                             const oldList = JSON.parse(localStorage.getItem('queue')) || [];
-                            oldList.push(movie);
-                            localStorage.setItem('queue', JSON.stringify(oldList));
+                            if (oldList.some(oldList => oldList.id === movie.id)) {
+                                return;
+                            } else {
+                                oldList.push(movie);
+                                localStorage.setItem('queue', JSON.stringify(oldList));
+                            }
                         }    
                 }
             })
