@@ -16,6 +16,7 @@ let searchQuery;
 let data;
 let url;
 let fullUrl;
+let form;
 
 
 refs.prevButton.addEventListener("click", () => {
