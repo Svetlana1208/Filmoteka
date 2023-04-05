@@ -48,6 +48,7 @@ function getWatched() {
     refsMyLib.dotsNext.classList.add("is-hidden");
     refsMyLib.firstPage.classList.add("is-hidden");
     refsMyLib.dotsPrev.classList.add("is-hidden");
+    refsMyLib.paginationNumbers.innerHTML = "";
 
     const savedWatchedList = localStorage.getItem("watchedList");
     parsedWatchedList = JSON.parse(savedWatchedList);
@@ -66,6 +67,7 @@ function getQueue() {
     refsMyLib.dotsNext.classList.add("is-hidden");
     refsMyLib.firstPage.classList.add("is-hidden");
     refsMyLib.dotsPrev.classList.add("is-hidden");
+    refsMyLib.paginationNumbers.innerHTML = "";
 
     const savedQueueList = localStorage.getItem("queue");
     parsedQueueList = JSON.parse(savedQueueList);
