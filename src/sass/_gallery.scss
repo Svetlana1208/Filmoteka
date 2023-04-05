@@ -12,7 +12,7 @@
     }
 }
 
-.gallery {
+.gallery, .myLibGallery {
     width: 280px;
     display: flex;
     flex-wrap: wrap;
@@ -95,43 +95,31 @@
         }
     }
 
-        &__title {
-            margin-top: 10px;
+    &__title {
+        margin-top: 10px;
 
-            color: var(--black-color);
+        color: var(--black-color);
 
-            @media (min-width: 768px) {
-                margin-top: 8px;
-            }
-
-            @media (min-width: 1280px) {
-                margin-top: 12px;
-
-                font-size: 20px;
-                line-height: 24px;
-            }        
+        @media (min-width: 768px) {
+            margin-top: 8px;
         }
 
-        &__characteristics {
-            color: var(--secondary-color);
+        @media (min-width: 1280px) {
+            margin-top: 12px;
 
-            @media (min-width: 1280px) {
-                font-size: 20px;
-                line-height: 24px;
-            }        
-        }
-}
+            font-size: 20px;
+            line-height: 24px;
+        }        
+    }
 
+    &__characteristics {
+        color: var(--secondary-color);
 
-
-.arrow {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 16px;
-    height: 16px;
-
-    transform: translate(-50%, -50%);
+        @media (min-width: 1280px) {
+            font-size: 20px;
+            line-height: 24px;
+        }        
+    }
 }
 
 .pagination-number,
@@ -149,12 +137,13 @@
     line-height: 16px;
     color: var(--black-color);
     border: none;
+    border-radius: 5px;
     background-color: var(--white-color);
 }
 
 .pagination {
     padding-top: 40px;
-    padding-bottom: 60px;
+    padding-bottom: 40px;
     margin-left: auto;
     margin-right: auto;
 
@@ -164,6 +153,8 @@
     justify-content: center;
 
     @media (min-width: 768px) {
+        padding-top: 60px;
+
         width: 440px;
         height: 40px;
     }
@@ -190,17 +181,17 @@
         background-position: center;
         background-repeat: no-repeat;
         border: none;
+        border-radius: 5px;
     }
-
 
     &__previousPage {
         margin-right: 3px;
-        background-image: url(../images/arrow_left.svg);
+        background-image: url(../images/left.svg);
     }
 
     &__nextPage {
         margin-left: 3px;
-        background-image: url(../images/arrow_right.svg); 
+        background-image: url(../images/right.svg); 
     }
 
     &__firstPage,

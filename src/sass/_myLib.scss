@@ -1,0 +1,86 @@
+.myLib {
+    background-image: url(../images/Rectangle_320.png), url(../images/bgMyLib_320.png);
+
+    @media (min-width: 768px) {
+        background-image: url(../images/Rectangle_768.png), url(../images/bgMyLib_768.png);
+    }
+
+    @media (min-width: 1280px) {
+        background-image: url(../images/Rectangle_1280.png), url(../images/bgMyLib_1280.png);
+    }
+
+    &__btnBox {
+        width: 280px;
+        display: flex;
+        margin-top: 62px;
+        margin-left: auto;
+        margin-right: auto;    
+
+        justify-content: space-between;
+
+        @media (min-width: 768px) {
+            width: 336px;
+            margin-top: 40px;
+        }
+
+        @media (min-width: 1280px) {
+            width: 312px;
+        }
+    }   
+    
+    &__btn {
+        width: 130px;
+        height: 44px;
+        text-transform: uppercase;
+        color: var(--white-color);
+        background-color: transparent;
+        border: 1px solid #FFFFFF;
+        border-radius: 5px;
+        
+        @media (min-width: 768px) {
+            width: 152px;
+        }
+
+        @media (min-width: 1280px) {
+            width: 148px;
+            height: 42px;
+        }
+
+        &.is-active {
+            background-color: var(--primary-color);
+            box-shadow: 0px 8px 43px rgba(255, 107, 1, 0.6);
+            border-radius: 5px;
+            border: none;
+        }
+    }
+}
+
+.information {
+    text-align: center;
+
+    @media (min-width: 768px) {
+        font-size: 25px;
+        line-height: 30px;    
+    }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .pagination__list {
+    display: flex;
+    list-style-type: none;  
+  }
+  
+  .pagination__item {
+    padding: 8px;
+    margin: 8px;
+    cursor: pointer;
+  }
+  
+  .pagination__item--active {
+    font-weight: 800;
+    color: gold;
+  }

@@ -84,7 +84,6 @@
     position: relative;
 
     width: 280px;
-    height: 20px;
     margin-top: 54px;
     margin-left: auto;
     margin-right: auto;
@@ -101,7 +100,7 @@
     }
 
         &__input {
-            width: 265px;
+            width: 262px;
             padding: 0 0 4px 1px;
         
             font-family: 'Roboto';
@@ -123,11 +122,11 @@
             }
 
             @media (min-width: 768px) {
-                width: 320px;
+                width: 317px;
             }
         
             @media (min-width: 1280px) {
-                width: 380px;
+                width: 377px;
             }
         
         }

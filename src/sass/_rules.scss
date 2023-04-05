@@ -11,11 +11,16 @@ img {
     margin: 0;
 }
 
-body, h1, h2, h3 {
+body, h1, h2, h3, button {
     font-family: 'Roboto';
     font-weight: 500;
     font-size: 12px;
     line-height: 16px;
+    color: var(--black-color);
+}
+
+body.body-modal-open {
+    overflow: hidden;
 }
 
 .container {
@@ -39,9 +44,58 @@ body, h1, h2, h3 {
     clip: rect(0 0 0 0);
 }
 
+.pagination__previousPage.is-hidden,
+.pagination__nextPage.is-hidden,
 .pagination__dotsNext.is-hidden,
 .pagination__dotsPrev.is-hidden,
 .pagination__firstPage.is-hidden,
-.pagination__lastPage.is-hidden {
+.pagination__lastPage.is-hidden,
+.backdrop.is-hidden,
+.information.is-hidden,
+.search__icon.is-hidden,
+.spinner.is-hidden {
     display: none;
 }
+
+.spinner {
+    margin-bottom: 7px;
+}
+
+@-webkit-keyframes spinner-border {
+    to {
+      transform: rotate(360deg) /* rtl:ignore */;
+    }
+  }
+  
+  @keyframes spinner-border {
+    to {
+      transform: rotate(360deg) /* rtl:ignore */;
+    }
+  }
+
+.spinner-border {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: -0.125em;
+    border: 0.25em solid var(--white-color);
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: 0.75s linear infinite spinner-border;
+    animation: 0.75s linear infinite spinner-border;
+  }
+  
+  .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.1em;
+  }
+  
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner-border {
+      animation-duration: 1.5s;
+    }
+  }
+  
+  
