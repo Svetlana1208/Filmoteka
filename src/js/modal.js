@@ -4,6 +4,9 @@ import {refs} from "./vars";
 import addToWatched from "./watched";
 import addToQueue from "./queue";
 
+let movie;
+let movieIndex;
+
 const modal = (data) => {
     document.querySelectorAll(".gallery__item").forEach((card) => {
 
@@ -64,3 +67,5 @@ const modal = (data) => {
 }
 
 export default modal;
+export {movie};
+export {movieIndex};

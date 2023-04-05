@@ -4,6 +4,8 @@ import {genresList} from "./js/genres";
 import fetchRequestGenres from "./js/genres";
 import fetchRequest from "./js/fetch";
 import modal from "./js/modal";
+import {movie} from "./js/modal";
+import {movieIndex} from "./js/modal";
 
 
 let page = 1;
@@ -14,8 +16,6 @@ let searchQuery;
 let data;
 let url;
 let fullUrl;
-let movie;
-let movieIndex;
 
 
 refs.prevButton.addEventListener("click", () => {

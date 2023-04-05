@@ -1,3 +1,5 @@
+import { movie } from "./modal";
+
 const addToWatched = () => {
     const oldList = JSON.parse(localStorage.getItem('watchedList')) || [];
     oldList.push(movie);
