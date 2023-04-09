@@ -14,6 +14,7 @@ export const refs = {
     movieCardBox: document.querySelector(".movieCard__box"),
     modal: document.querySelector("[data-modal]"),
     closeModalBtn: document.querySelector("[data-modal-close]"),
+    
 };
 
 const key = '4273054ff6f056d7541ef873941254f6';

@@ -17,10 +17,10 @@ refsMyLib.closeModalBtn.addEventListener('click', () => {
     refsMyLib.modal.classList.add("is-hidden");
     document.body.classList.remove("body-modal-open");
 })
-refsMyLib.modal.addEventListener('click', () => {
-    refsMyLib.modal.classList.add("is-hidden");
-    document.body.classList.remove("body-modal-open");
-})
+// refsMyLib.modal.addEventListener('click', () => {
+//     refsMyLib.modal.classList.add("is-hidden");
+//     document.body.classList.remove("body-modal-open");
+// })
 refsMyLib.prevButton.addEventListener("click", () => {
     updatePaginationPrev(currentPage - 1);
     setCurrentPage(currentDataAll, currentPage - 1);

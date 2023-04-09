@@ -38,10 +38,10 @@ refs.closeModalBtn.addEventListener('click', () => {
     document.body.classList.remove("body-modal-open");
 })
 
-refs.modal.addEventListener('click', () => {
-    refs.modal.classList.add("is-hidden");
-    document.body.classList.remove("body-modal-open");
-})
+// refs.modal.addEventListener('click', () => {
+//     refs.modal.classList.add("is-hidden");
+//     document.body.classList.remove("body-modal-open");
+// })
 
 
 
