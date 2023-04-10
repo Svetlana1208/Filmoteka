@@ -5,10 +5,6 @@ import fetchRequest from "./fetch";
 import YouTubePlayer from 'youtube-player';
 
 
-let trailer;
-let trailerList;
-let trailerLink;
-let trailerIndex;
 let trailerKey;
 
 const modal = (data) => {
@@ -63,27 +59,46 @@ const modal = (data) => {
                                 </div>
                             </article>`;
                     
-                            refs.movieCardBox.innerHTML = markupCard;
-                            refs.modal.classList.remove("is-hidden");    
-                            refsMyLib.movieCardBox.innerHTML = markupCard;
-                            refsMyLib.modal.classList.remove("is-hidden");
-        
-                            downloadUrlTrailer();
+                        refs.movieCardBox.innerHTML = markupCard;
+                        refsMyLib.movieCardBox.innerHTML = markupCard;
 
+                        onOpenModal();
+
+                        function onOpenModal() {
+                            refs.modal.classList.remove("is-hidden");    
+                            refsMyLib.modal.classList.remove("is-hidden");
                             document.body.classList.add("body-modal-open");
                             document.querySelector("[data-add-to-watched]").addEventListener('click', addToWatched);
                             document.querySelector("[data-add-to-queue]").addEventListener('click', addToQueue);
                             document.querySelector("[data-trailerModal-button]").addEventListener('click', onTrailer);
-                            document.querySelector("[data-trailerClose-button]").addEventListener('click', () => {
-                                document.querySelector("[data-trailerModal]").classList.add("is-hidden");
-                            });
-    
-                    
+                            window.addEventListener('keydown', onEscKeyPress);
+                            refs.closeModalBtn.addEventListener('click', onCloseModal);
+                            refsMyLib.closeModalBtn.addEventListener('click', onCloseModal);                            
+                            refs.modal.addEventListener('click', onBackdropClick);
+                            
+                            downloadUrlTrailer();
+                        }
 
-                        function addToWatched() {
-                            refs.modal.classList.add("is-hidden");
+                        function onCloseModal() {
+                            refs.modal.classList.add("is-hidden");    
                             refsMyLib.modal.classList.add("is-hidden");
                             document.body.classList.remove("body-modal-open");
+                        }
+
+                        function onEscKeyPress(e) {
+                            if (e.code === 'Escape') {
+                                onCloseModal();
+                            }
+                        }
+
+                        function onBackdropClick(e) {
+                            if (e.currentTarget === e.target) {
+                                onCloseModal();
+                            }
+                        }
+
+                        function addToWatched() {
+                            onCloseModal();
 
                             const oldList = JSON.parse(localStorage.getItem('watchedList')) || [];
                             if (oldList.some(oldList => oldList.id === movie.id)) {
@@ -95,9 +110,7 @@ const modal = (data) => {
                         }
                         
                         function addToQueue() {
-                            refs.modal.classList.add("is-hidden");
-                            refsMyLib.modal.classList.add("is-hidden");
-                            document.body.classList.remove("body-modal-open");
+                            onCloseModal();
 
                             const oldList = JSON.parse(localStorage.getItem('queue')) || [];
                             if (oldList.some(oldList => oldList.id === movie.id)) {
@@ -110,7 +123,7 @@ const modal = (data) => {
                         
                         async function downloadUrlTrailer() {
                             let trailerObject;
-                            url = `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=${key}&language=en-US`;
+                            const url = `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=${key}&language=en-US`;
                             try {
                                 trailerObject = await fetchRequest(url);
                             } catch (error) {
@@ -120,24 +133,34 @@ const modal = (data) => {
                             trailerObject.results.find(trailer => {
                                 if (trailer.name.includes('Official')) {
                                 trailerKey = trailer.key;
-                                return trailerKey;
-                            }})      
+                                return trailerKey} else {
+                                trailerKey = trailerObject.results[0].key;
+                                }
+                            }) 
                         }
 
                         function onTrailer() {
                             document.querySelector("[data-trailerModal]").classList.remove("is-hidden");
 
-                            global.YouTubePlayer = YouTubePlayer;
-
-                            let player1;
+                            let player;
                     
-                            player1 = YouTubePlayer('player', {
-                                width: '780',
-                                height: '530',
-                                videoId: trailerKey
+                            player = YouTubePlayer('player', {
+                                width: '100%',
+                                videoId: trailerKey,
+                                host: 'https://www.youtube.com',
                             });
                         
-                            player1.playVideo()
+                            player.playVideo();
+
+                            function stopVideo() {
+                                player.stopVideo();
+                              }
+
+                              document.querySelector("[data-trailerClose-button]").addEventListener('click', () => {
+                                stopVideo();
+                                document.querySelector("[data-trailerModal]").classList.add("is-hidden");
+                            });
+
                         }
                 }
             })

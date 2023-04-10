@@ -13,26 +13,15 @@ let parsedQueueList;
 
 refsMyLib.watchedBtn.addEventListener('click', getWatched);
 refsMyLib.queueBtn.addEventListener('click', getQueue);
-refsMyLib.closeModalBtn.addEventListener('click', () => {
-    refsMyLib.modal.classList.add("is-hidden");
-    document.body.classList.remove("body-modal-open");
-})
-// refsMyLib.modal.addEventListener('click', () => {
-//     refsMyLib.modal.classList.add("is-hidden");
-//     document.body.classList.remove("body-modal-open");
-// })
 refsMyLib.prevButton.addEventListener("click", () => {
     updatePaginationPrev(currentPage - 1);
     setCurrentPage(currentDataAll, currentPage - 1);
 });
-
 refsMyLib.nextButton.addEventListener("click", () => {
     updatePaginationNext(currentPage + 1);
     setCurrentPage(currentDataAll, currentPage + 1);
 });
-
 refsMyLib.firstPage.addEventListener('click', downloadFirstPage);
-
 refsMyLib.lastPage.addEventListener('click', downloadLastPage);
 
 
@@ -148,8 +137,8 @@ function onMarkUpLib(data) {
     const markup = data.map(card =>
         `<li class="gallery__item" movie-index = ${card.id}>
             <img class="film__poster" src="${card.posterPath}${card.poster_path}" alt="poster">
-            <h3 class="film__title">${card.original_title}</h3>
-            <p class="film__characteristics">${card.genre_ids.join(", ")} | ${card.release_date}</p>
+            <h3 class="film__title">${card.original_title.slice(0, 60)}</h3>
+            <p class="film__characteristics">${card.genre_ids.join(", ").slice(0, 35)} | ${card.release_date}</p>
         </li>`)
         .join("");
 
