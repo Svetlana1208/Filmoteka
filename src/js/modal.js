@@ -142,6 +142,7 @@ const modal = (data) => {
                         function onTrailer() {
                             document.querySelector("[data-trailerModal]").classList.remove("is-hidden");
 
+
                             let player;
                     
                             player = YouTubePlayer('player', {
