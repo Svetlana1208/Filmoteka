@@ -14,7 +14,16 @@ export const refs = {
     movieCardBox: document.querySelector(".movieCard__box"),
     modal: document.querySelector("[data-modal]"),
     closeModalBtn: document.querySelector("[data-modal-close]"),
-    
+    regModalOpenBtn: document.querySelector("[data-regModal-open]"),
+    regModal: document.querySelector("[data-regModal"),
+    regModalCloseBtn: document.querySelector("[data-regModal-close]"),
+    regForm: document.querySelector(".form"),
+    regLogin: document.querySelector("[data-reg-login]"),
+    regEmail: document.querySelector("[data-reg-email]"),
+    regPassword: document.querySelector("[data-reg-password]"),
+    regConfirmPassword: document.querySelector("[data-reg-confirmPassword]"),
+    regSubmit: document.querySelector("[data-reg-submit]"),
+    regInfo: document.querySelector("[data-reg-info]"),
 };
 
 const key = '4273054ff6f056d7541ef873941254f6';

@@ -28,6 +28,7 @@ refs.nextButton.addEventListener("click", () => {
 refs.firstPage.addEventListener('click', downloadFirstPage);
 refs.lastPage.addEventListener('click', downloadLastPage);
 refs.form.addEventListener('submit', onSearch);
+refs.regModalOpenBtn.addEventListener('click', onOpenRegModal);
 
 
 
@@ -342,3 +343,92 @@ async function onSearch(e) {
     refs.searchSpinner.classList.add("is-hidden");
 }
 
+
+function onOpenRegModal() {
+    refs.regModal.classList.remove("is-hidden");
+    document.body.classList.add("body-modal-open");
+    refs.regModalCloseBtn.addEventListener('click', onCloseRegModal);
+    window.addEventListener('keydown', onEscKeyPressReg);
+    refs.regModal.addEventListener('click', onBackdropClickReg);
+    refs.regForm.addEventListener('submit', saveDataReg);
+}
+
+function onCloseRegModal() {
+    refs.regModal.classList.add("is-hidden");    
+    document.body.classList.remove("body-modal-open");
+    refs.regInfo.innerHTML = "";
+    refs.regLogin.value = "";
+    refs.regEmail.value = "";
+    refs.regPassword.value = "";
+    refs.regConfirmPassword.value = "";
+    refs.regLogin.classList.remove("error");
+    refs.regEmail.classList.remove("error");
+    refs.regPassword.classList.remove("error");
+    refs.regConfirmPassword.classList.remove("error");
+}
+
+function onEscKeyPressReg(e) {
+    if (e.code === 'Escape') {
+        onCloseRegModal();
+    }
+}
+
+function onBackdropClickReg(e) {
+    if (e.currentTarget === e.target) {
+        onCloseRegModal();
+    }
+}
+
+function saveDataReg(e) {
+    e.preventDefault();
+
+    const {elements: { login, email, password, confirmPassword }} = e.currentTarget;
+
+    if (login.value === "") {
+        refs.regLogin.classList.add("error");
+        return refs.regInfo.innerHTML = "Please fill in all the fields!";
+    }
+
+    if (email.value === "") {
+        refs.regEmail.classList.add("error");
+        return refs.regInfo.innerHTML = "Please fill in all the fields!";
+    }  
+
+    if (password.value === "") {
+        refs.regPassword.classList.add("error");
+        return refs.regInfo.innerHTML = "Please fill in all the fields!";
+    }
+
+    if (password.value !== confirmPassword.value || confirmPassword.value === "") {
+        refs.regPassword.classList.add("error");
+        refs.regConfirmPassword.classList.add("error");
+        return refs.regInfo.innerHTML = "Enter correct password";
+    }
+
+    const user = {
+        login: login.value,
+        email: email.value,
+        password: password.value,
+    };
+
+    const oldList = JSON.parse(localStorage.getItem('users')) || [];
+    
+    if (oldList.some(oldList => oldList.email === user.email)) {
+        refs.regEmail.classList.add("error");
+        return refs.regInfo.innerHTML = "Such a user already exists";}
+    else if (oldList.some(oldList => oldList.login === user.login)) {
+        refs.regLogin.classList.add("error");
+        return refs.regInfo.innerHTML = "This login is already in use";}
+    else {
+        oldList.push(user);
+        localStorage.setItem('users', JSON.stringify(oldList));
+    }
+
+    e.currentTarget.reset();
+    refs.regLogin.classList.remove("error");
+    refs.regEmail.classList.remove("error");
+    refs.regPassword.classList.remove("error");
+    refs.regConfirmPassword.classList.remove("error");
+    refs.regInfo.innerHTML = "";
+    refs.regModal.classList.add("is-hidden");
+}
