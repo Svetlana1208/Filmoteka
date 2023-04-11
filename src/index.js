@@ -4,6 +4,10 @@ import {genresList} from "./js/genres";
 import fetchRequestGenres from "./js/genres";
 import fetchRequest from "./js/fetch";
 import modal from "./js/modal";
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 
 
 let page = 1;
@@ -15,7 +19,20 @@ let data;
 let url;
 let fullUrl;
 let form;
+let user;
+const firebaseConfig = {
+    apiKey: "AIzaSyCds-laluoBicOUU9XaI5Zyn2hZba3I6P4",
+    authDomain: "filmoteka-a678a.firebaseapp.com",
+    projectId: "filmoteka-a678a",
+    storageBucket: "filmoteka-a678a.appspot.com",
+    messagingSenderId: "767994332645",
+    appId: "1:767994332645:web:7a3961a3c7878fcc12db0c"
+};
 
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+console.log(app);
+console.log(auth);
 
 refs.prevButton.addEventListener("click", () => {
     updatePaginationPrev(currentPage - 1);
@@ -405,24 +422,35 @@ function saveDataReg(e) {
         return refs.regInfo.innerHTML = "Enter correct password";
     }
 
-    const user = {
+    user = {
         login: login.value,
         email: email.value,
         password: password.value,
     };
 
-    const oldList = JSON.parse(localStorage.getItem('users')) || [];
-    
-    if (oldList.some(oldList => oldList.email === user.email)) {
-        refs.regEmail.classList.add("error");
-        return refs.regInfo.innerHTML = "Such a user already exists";}
-    else if (oldList.some(oldList => oldList.login === user.login)) {
-        refs.regLogin.classList.add("error");
-        return refs.regInfo.innerHTML = "This login is already in use";}
-    else {
-        oldList.push(user);
-        localStorage.setItem('users', JSON.stringify(oldList));
-    }
+    createUserWithEmailAndPassword(auth, user.email, user.password)
+  .then((userCredential) => {
+    console.log(userCredential);
+    const user = userCredential.user;
+    console.log(user);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+
+    // const oldList = JSON.parse(localStorage.getItem('users')) || [];
+
+    // if (oldList.some(oldList => oldList.email === user.email)) {
+    //     refs.regEmail.classList.add("error");
+    //     return refs.regInfo.innerHTML = "Such a user already exists";}
+    // else if (oldList.some(oldList => oldList.login === user.login)) {
+    //     refs.regLogin.classList.add("error");
+    //     return refs.regInfo.innerHTML = "This login is already in use";}
+    // else {
+    //     oldList.push(user);
+    //     localStorage.setItem('users', JSON.stringify(oldList));
+    // }
 
     e.currentTarget.reset();
     refs.regLogin.classList.remove("error");
@@ -432,3 +460,4 @@ function saveDataReg(e) {
     refs.regInfo.innerHTML = "";
     refs.regModal.classList.add("is-hidden");
 }
+
