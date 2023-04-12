@@ -7,7 +7,7 @@ import modal from "./js/modal";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 
 let page = 1;
@@ -28,11 +28,8 @@ const firebaseConfig = {
     messagingSenderId: "767994332645",
     appId: "1:767994332645:web:7a3961a3c7878fcc12db0c"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-console.log(app);
-console.log(auth);
 
 refs.prevButton.addEventListener("click", () => {
     updatePaginationPrev(currentPage - 1);
@@ -45,6 +42,7 @@ refs.nextButton.addEventListener("click", () => {
 refs.firstPage.addEventListener('click', downloadFirstPage);
 refs.lastPage.addEventListener('click', downloadLastPage);
 refs.form.addEventListener('submit', onSearch);
+refs.authModalOpenBtn.addEventListener('click', onOpenAuthModal);
 refs.regModalOpenBtn.addEventListener('click', onOpenRegModal);
 
 
@@ -361,6 +359,80 @@ async function onSearch(e) {
 }
 
 
+function onOpenAuthModal() {
+    refs.authModal.classList.remove("is-hidden");
+    document.body.classList.add("body-modal-open");
+    refs.authModalCloseBtn.addEventListener('click', onCloseAuthModal);
+    window.addEventListener('keydown', onEscKeyPressAuth);
+    refs.authModal.addEventListener('click', onBackdropClickAuth);
+    refs.authForm.addEventListener('submit', authorization);
+}
+
+function onCloseAuthModal() {
+    refs.authModal.classList.add("is-hidden");    
+    document.body.classList.remove("body-modal-open");
+    currentTargetAuthReset();
+}
+
+function onEscKeyPressAuth(e) {
+    if (e.code === 'Escape') {
+        onCloseAuthModal();
+    }
+}
+
+function onBackdropClickAuth(e) {
+    if (e.currentTarget === e.target) {
+        onCloseAuthModal();
+    }
+}
+
+function currentTargetAuthReset() {
+    refs.authInfo.innerHTML = "";
+    refs.authEmail.value = "";
+    refs.authPassword.value = "";
+    refs.authEmail.classList.remove("error");
+    refs.authPassword.classList.remove("error");
+}
+
+function authorization(e) {
+    e.preventDefault();
+    const {elements: { email, password, confirmPassword }} = e.currentTarget;
+    user = {
+        email: email.value,
+        password: password.value,
+    };
+
+    signInWithEmailAndPassword(auth, user.email, user.password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log(user);
+      onCloseAuthModal();
+      refs.authorization.classList.add("is-hidden");
+      refs.navigation.classList.remove("is-hidden");
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      if (errorCode === "auth/user-not-found") {
+        refs.authEmail.classList.add("error");
+        return refs.authInfo.innerHTML = "Such user was not found";
+      }
+
+      if (errorCode === "auth/wrong-password") {
+        refs.authPassword.classList.add("error");
+        return refs.authInfo.innerHTML = "Enter correct password";
+      }
+
+      if (errorCode === "auth/missing-password") {
+        refs.authPassword.classList.add("error");
+        return refs.authInfo.innerHTML = "Enter password";
+      }
+    });
+}
+
+
+
 function onOpenRegModal() {
     refs.regModal.classList.remove("is-hidden");
     document.body.classList.add("body-modal-open");
@@ -373,15 +445,7 @@ function onOpenRegModal() {
 function onCloseRegModal() {
     refs.regModal.classList.add("is-hidden");    
     document.body.classList.remove("body-modal-open");
-    refs.regInfo.innerHTML = "";
-    refs.regLogin.value = "";
-    refs.regEmail.value = "";
-    refs.regPassword.value = "";
-    refs.regConfirmPassword.value = "";
-    refs.regLogin.classList.remove("error");
-    refs.regEmail.classList.remove("error");
-    refs.regPassword.classList.remove("error");
-    refs.regConfirmPassword.classList.remove("error");
+    currentTargeRegtReset();
 }
 
 function onEscKeyPressReg(e) {
@@ -396,15 +460,20 @@ function onBackdropClickReg(e) {
     }
 }
 
+function currentTargeRegtReset() {
+    refs.regInfo.innerHTML = "";
+    refs.regEmail.value = "";
+    refs.regPassword.value = "";
+    refs.regConfirmPassword.value = "";
+    refs.regEmail.classList.remove("error");
+    refs.regPassword.classList.remove("error");
+    refs.regConfirmPassword.classList.remove("error");
+}
+
 function saveDataReg(e) {
     e.preventDefault();
 
-    const {elements: { login, email, password, confirmPassword }} = e.currentTarget;
-
-    if (login.value === "") {
-        refs.regLogin.classList.add("error");
-        return refs.regInfo.innerHTML = "Please fill in all the fields!";
-    }
+    const {elements: { email, password, confirmPassword }} = e.currentTarget;
 
     if (email.value === "") {
         refs.regEmail.classList.add("error");
@@ -422,42 +491,30 @@ function saveDataReg(e) {
         return refs.regInfo.innerHTML = "Enter correct password";
     }
 
+    if (password.value.length < 5) {
+        return refs.regInfo.innerHTML = "Enter a stronger password"; 
+    }
+
     user = {
-        login: login.value,
         email: email.value,
         password: password.value,
     };
 
     createUserWithEmailAndPassword(auth, user.email, user.password)
-  .then((userCredential) => {
-    console.log(userCredential);
-    const user = userCredential.user;
-    console.log(user);
+    .then((userCredential) => {
+        const user = userCredential.user;
+        refs.regModal.classList.add("is-hidden"); 
+        currentTargeRegtReset();   
   })
   .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
+        const errorCode = error.code;
+        if (errorCode === "auth/invalid-email") {
+            refs.regEmail.classList.add("error");
+            return refs.regInfo.innerHTML = "Enter correct email";
+        } else if (errorCode === "auth/email-already-in-use") {
+            refs.regEmail.classList.add("error");
+            return refs.regInfo.innerHTML = "Such a user already exists";
+        }
   });
-
-    // const oldList = JSON.parse(localStorage.getItem('users')) || [];
-
-    // if (oldList.some(oldList => oldList.email === user.email)) {
-    //     refs.regEmail.classList.add("error");
-    //     return refs.regInfo.innerHTML = "Such a user already exists";}
-    // else if (oldList.some(oldList => oldList.login === user.login)) {
-    //     refs.regLogin.classList.add("error");
-    //     return refs.regInfo.innerHTML = "This login is already in use";}
-    // else {
-    //     oldList.push(user);
-    //     localStorage.setItem('users', JSON.stringify(oldList));
-    // }
-
-    e.currentTarget.reset();
-    refs.regLogin.classList.remove("error");
-    refs.regEmail.classList.remove("error");
-    refs.regPassword.classList.remove("error");
-    refs.regConfirmPassword.classList.remove("error");
-    refs.regInfo.innerHTML = "";
-    refs.regModal.classList.add("is-hidden");
 }
 

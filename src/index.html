@@ -26,24 +26,40 @@
                         <h1 class="header__title">Filmoteka</h1>    
                     </div>
     
-                    <ul class="auth">
-                        <li class="auth__item">
-                            <button class="auth__btn" type="button" data-authModal-open>Authorization</button>
+                    <ul class="authorization" data-authorization>
+                        <li class="authorization__item">
+                            <button class="authorization__btn" type="button" data-authModal-open>Authorization</button>
+                            <div class="backdrop is-hidden" data-authModal>
+                                <div class="formBox">
+                                    <button class="movieCard__btn" type="button" data-authModal-close>
+                                        <svg class="movieCard__cross">
+                                            <use href="./images/sprite.svg#icon-close"></use>
+                                        </svg>
+                                    </button>
+                                    
+                                    <form class="form" data-auth-form>
+                                        <h3 class="form__title">Authorization</h3>
+                                        <input class="form__field" type="email" name="email" placeholder="Email" data-auth-email>
+                                        <input class="form__field" type="password" name="password" placeholder="Password" data-auth-password>
+                                        <p class="form__authInfo" data-auth-info></p>
+                                        <button class="form__submit" type="submit" data-auth-submit>Submit</button>
+                                    </form>
+                                </div>
+                            </div>
                         </li>
 
-                        <li class="auth__item">
-                            <button class="auth__btn" type="button" data-regModal-open>Registration</button>
+                        <li class="authorization__item">
+                            <button class="authorization__btn" type="button" data-regModal-open>Registration</button>
                             <div class="backdrop is-hidden" data-regModal>
-                                <div class="authForm">
+                                <div class="formBox">
                                     <button class="movieCard__btn" type="button" data-regModal-close>
                                         <svg class="movieCard__cross">
                                             <use href="./images/sprite.svg#icon-close"></use>
                                         </svg>
                                     </button>
                                     
-                                    <form class="form">
+                                    <form class="form" data-reg-form>
                                         <h3 class="form__title">Registration</h3>
-                                        <input class="form__field" type="text" name="login" placeholder="Login" data-reg-login>
                                         <input class="form__field" type="email" name="email" placeholder="Email" data-reg-email>
                                         <input class="form__field" type="password" name="password" placeholder="Password" data-reg-password>
                                         <input class="form__field" type="password" name="confirmPassword" placeholder="Confirm Password" data-reg-confirmPassword>
@@ -52,7 +68,6 @@
                                     </form>
                                 </div>
                             </div>
-
                         </li>
 
                     </ul>

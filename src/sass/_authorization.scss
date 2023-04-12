@@ -1,4 +1,4 @@
-.auth {
+.authorization {
     display: flex;
     justify-content: space-between;
 
@@ -17,13 +17,12 @@
     }
 }
 
-.authForm {
+.formBox {
     position: absolute;
     top: 50%;
     left: 50%;
 
     width: 280px;
-    height: 400px;
     padding: 40px;
 
     background-color: var(--white-color);

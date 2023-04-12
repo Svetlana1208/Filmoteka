@@ -88,7 +88,8 @@ body.body-modal-open {
 .backdrop.is-hidden,
 .information.is-hidden,
 .search__icon.is-hidden,
-.spinner.is-hidden {
+.spinner.is-hidden,
+.authorization.is-hidden {
   display: none;
 }
 
@@ -836,14 +837,14 @@ body.body-modal-open {
   background-image: url(../images/close.svg);
 }
 
-.auth {
+.authorization {
   display: flex;
   justify-content: space-between;
 }
-.auth__item:first-child {
+.authorization__item:first-child {
   margin-right: 40px;
 }
-.auth__btn {
+.authorization__btn {
   background-color: transparent;
   border: none;
   line-height: 14px;
@@ -851,12 +852,11 @@ body.body-modal-open {
   color: var(--white-color);
 }
 
-.authForm {
+.formBox {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 280px;
-  height: 400px;
   padding: 40px;
   background-color: var(--white-color);
   border: 2px solid var(--primary-color);
