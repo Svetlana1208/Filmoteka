@@ -83,3 +83,21 @@
 .error {
     border-color: var(--primary-color);
 }
+
+.user {
+    display: flex;
+    justify-content: flex-end;
+
+    &__login {
+        margin-right: 30px;
+        font-size: 14px;
+        font-style: italic;
+        color: var(--white-color);
+    }
+
+    &__signOut {
+        color: var(--white-color);
+        background-color: transparent;
+        border: none;
+    }
+}

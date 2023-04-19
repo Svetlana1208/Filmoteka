@@ -168,6 +168,12 @@
             color: var(--white-color);
             border: none;
         }
+
+        &.disabledBtn {
+            color: var(--light-grey-color);
+            border-color: var(--light-grey-color);
+          }
+          
     }
 
     &__box {

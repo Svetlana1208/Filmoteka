@@ -1,5 +1,9 @@
-import { refsMyLib } from "./varsMyLib";
-import modal from "./modal";
+import { refsMyLib } from "./js/varsMyLib";
+import modal from "./js/modal";
+import {getAuth, onAuthStateChanged, signOut} from "firebase/auth";
+import {auth, db} from "./js/vars";
+import { collection, getDocs } from "firebase/firestore";
+
 
 let lastPage;
 let page = 1;
@@ -7,7 +11,7 @@ let el = 20;
 let currentPage;
 let firstPage = 1;
 let parsedWatchedList;
-let currentDataAll;
+let currentDataAll = [];
 let parsedQueueList;
 
 
@@ -24,50 +28,87 @@ refsMyLib.nextButton.addEventListener("click", () => {
 refsMyLib.firstPage.addEventListener('click', downloadFirstPage);
 refsMyLib.lastPage.addEventListener('click', downloadLastPage);
 
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        const login = user.email.split('@')[0];
+        console.log(login);
+        refsMyLib.userLogin.innerHTML = `${login}`;
+        refsMyLib.userSignOut.addEventListener('click', signOutUser);
+    } else {
+        console.log("user wasn't authorization")
+    }
+})
 
+function signOutUser() {
+    signOut(getAuth());
+}
 
 getWatched();
 
 function getWatched() {
+    currentDataAll = [];
+    allBtnIsHidden();
     refsMyLib.watchedBtn.classList.add("is-active");
     refsMyLib.queueBtn.classList.remove("is-active");
-    refsMyLib.nextButton.classList.add("is-hidden");
-    refsMyLib.prevButton.classList.add("is-hidden");
-    refsMyLib.lastPage.classList.add("is-hidden");
-    refsMyLib.dotsNext.classList.add("is-hidden");
-    refsMyLib.firstPage.classList.add("is-hidden");
-    refsMyLib.dotsPrev.classList.add("is-hidden");
     refsMyLib.paginationNumbers.innerHTML = "";
 
-    const savedWatchedList = localStorage.getItem("watchedList");
-    parsedWatchedList = JSON.parse(savedWatchedList);
+    const querySnapshot = getDocs(collection(db, "watched"));
 
-    currentDataAll = parsedWatchedList;
+    querySnapshot
+    .then (PromiseResult => {
+        PromiseResult._snapshot.docChanges.forEach((movie) => {
+            const aaa = movie.doc.data.value.mapValue.fields;
+            currentDataAll.push(aaa);
+        })
+        firstDownload();
+    });
 
-    firstDownload();
+    //---------------------------------------------------
+    // Реализация через localStorage:
+    //---------------------------------------------------
+
+    // const savedWatchedList = localStorage.getItem("watchedList");
+    // parsedWatchedList = JSON.parse(savedWatchedList);
+
+    // currentDataAll = parsedWatchedList;
+    // firstDownload();
+    //---------------------------------------------------
+
 }
 
 function getQueue() {
+    currentDataAll = [];
+    allBtnIsHidden();
     refsMyLib.watchedBtn.classList.remove("is-active");
     refsMyLib.queueBtn.classList.add("is-active");
-    refsMyLib.nextButton.classList.add("is-hidden");
-    refsMyLib.prevButton.classList.add("is-hidden");
-    refsMyLib.lastPage.classList.add("is-hidden");
-    refsMyLib.dotsNext.classList.add("is-hidden");
-    refsMyLib.firstPage.classList.add("is-hidden");
-    refsMyLib.dotsPrev.classList.add("is-hidden");
     refsMyLib.paginationNumbers.innerHTML = "";
 
-    const savedQueueList = localStorage.getItem("queue");
-    parsedQueueList = JSON.parse(savedQueueList);
+    const querySnapshotQueue = getDocs(collection(db, "queue"));
 
-    currentDataAll = parsedQueueList;
+    querySnapshotQueue
+    .then (PromiseResult => {
+        PromiseResult._snapshot.docChanges.forEach((movie) => {
+            const aaa = movie.doc.data.value.mapValue.fields;
+            currentDataAll.push(aaa);
+        })
+        firstDownload();
+    });
 
-    firstDownload();
+    //---------------------------------------------------
+    // Реализация через localStorage:
+    //---------------------------------------------------
+
+    // const savedQueueList = localStorage.getItem("queue");
+    // parsedQueueList = JSON.parse(savedQueueList);
+
+    // currentDataAll = parsedQueueList;
+    //---------------------------------------------------
 }
 
 function firstDownload() {
-    if (currentDataAll !== null) {
+    if (currentDataAll.length !== 0) {
+        refsMyLib.pagination.classList.remove("is-hidden");
+
         lastPage = Math.ceil(currentDataAll.length / el);
 
         setCurrentPage(currentDataAll, 1);
@@ -133,17 +174,33 @@ function setCurrentPage (data, page) {
 
 function onMarkUpLib(data) {
     refsMyLib.gallery.innerHTML="";
-
+    console.log(currentDataAll);
+    currentDataAll.forEach(movie => {
+        movie.genres = [];
+        if(movie.genre_ids.arrayValue) {
+            movie.genre_ids.arrayValue.values.forEach(genres => {
+            movie.genres.push(genres.stringValue);
+        })}
+    })
     const markup = data.map(card =>
-        `<li class="gallery__item" movie-index = ${card.id}>
-            <img class="film__poster" src="${card.posterPath}${card.poster_path}" alt="poster">
-            <h3 class="film__title">${card.original_title.slice(0, 60)}</h3>
-            <p class="film__characteristics">${card.genre_ids.join(", ").slice(0, 35)} | ${card.release_date}</p>
-        </li>`)
-        .join("");
+        `<li class="gallery__item" movie-index = ${card.id.integerValue}>
+            <img class="film__poster" src="${card.posterPath.stringValue}${card.poster_path.stringValue}" alt="poster">
+            <h3 class="film__title">${card.original_title.stringValue.slice(0, 60)}</h3>
+            <p class="film__characteristics">${card.genres.join(", ").slice(0, 35)} | ${card.release_date.stringValue}</p>
+        </li>`
+    )
+    .join("");
 
-        refsMyLib.gallery.insertAdjacentHTML('beforeend', markup);
+    refsMyLib.gallery.insertAdjacentHTML('beforeend', markup);
+}
 
+function allBtnIsHidden() {
+    refsMyLib.nextButton.classList.add("is-hidden");
+    refsMyLib.prevButton.classList.add("is-hidden");
+    refsMyLib.lastPage.classList.add("is-hidden");
+    refsMyLib.dotsNext.classList.add("is-hidden");
+    refsMyLib.firstPage.classList.add("is-hidden");
+    refsMyLib.dotsPrev.classList.add("is-hidden");
 }
 
 function disableButton(button) {

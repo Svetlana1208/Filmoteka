@@ -1,13 +1,9 @@
-import {refs} from "./js/vars";
-import {key} from "./js/vars";
+import {refs, key, auth} from "./js/vars";
 import {genresList} from "./js/genres";
 import fetchRequestGenres from "./js/genres";
 import fetchRequest from "./js/fetch";
 import modal from "./js/modal";
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 
 let page = 1;
@@ -19,17 +15,6 @@ let data;
 let url;
 let fullUrl;
 let form;
-let user;
-const firebaseConfig = {
-    apiKey: "AIzaSyCds-laluoBicOUU9XaI5Zyn2hZba3I6P4",
-    authDomain: "filmoteka-a678a.firebaseapp.com",
-    projectId: "filmoteka-a678a",
-    storageBucket: "filmoteka-a678a.appspot.com",
-    messagingSenderId: "767994332645",
-    appId: "1:767994332645:web:7a3961a3c7878fcc12db0c"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 
 refs.prevButton.addEventListener("click", () => {
     updatePaginationPrev(currentPage - 1);
@@ -42,9 +27,7 @@ refs.nextButton.addEventListener("click", () => {
 refs.firstPage.addEventListener('click', downloadFirstPage);
 refs.lastPage.addEventListener('click', downloadLastPage);
 refs.form.addEventListener('submit', onSearch);
-refs.authModalOpenBtn.addEventListener('click', onOpenAuthModal);
 refs.regModalOpenBtn.addEventListener('click', onOpenRegModal);
-
 
 
 getPopular();
@@ -359,80 +342,6 @@ async function onSearch(e) {
 }
 
 
-function onOpenAuthModal() {
-    refs.authModal.classList.remove("is-hidden");
-    document.body.classList.add("body-modal-open");
-    refs.authModalCloseBtn.addEventListener('click', onCloseAuthModal);
-    window.addEventListener('keydown', onEscKeyPressAuth);
-    refs.authModal.addEventListener('click', onBackdropClickAuth);
-    refs.authForm.addEventListener('submit', authorization);
-}
-
-function onCloseAuthModal() {
-    refs.authModal.classList.add("is-hidden");    
-    document.body.classList.remove("body-modal-open");
-    currentTargetAuthReset();
-}
-
-function onEscKeyPressAuth(e) {
-    if (e.code === 'Escape') {
-        onCloseAuthModal();
-    }
-}
-
-function onBackdropClickAuth(e) {
-    if (e.currentTarget === e.target) {
-        onCloseAuthModal();
-    }
-}
-
-function currentTargetAuthReset() {
-    refs.authInfo.innerHTML = "";
-    refs.authEmail.value = "";
-    refs.authPassword.value = "";
-    refs.authEmail.classList.remove("error");
-    refs.authPassword.classList.remove("error");
-}
-
-function authorization(e) {
-    e.preventDefault();
-    const {elements: { email, password, confirmPassword }} = e.currentTarget;
-    user = {
-        email: email.value,
-        password: password.value,
-    };
-
-    signInWithEmailAndPassword(auth, user.email, user.password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      console.log(user);
-      onCloseAuthModal();
-      refs.authorization.classList.add("is-hidden");
-      refs.navigation.classList.remove("is-hidden");
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode);
-      if (errorCode === "auth/user-not-found") {
-        refs.authEmail.classList.add("error");
-        return refs.authInfo.innerHTML = "Such user was not found";
-      }
-
-      if (errorCode === "auth/wrong-password") {
-        refs.authPassword.classList.add("error");
-        return refs.authInfo.innerHTML = "Enter correct password";
-      }
-
-      if (errorCode === "auth/missing-password") {
-        refs.authPassword.classList.add("error");
-        return refs.authInfo.innerHTML = "Enter password";
-      }
-    });
-}
-
-
-
 function onOpenRegModal() {
     refs.regModal.classList.remove("is-hidden");
     document.body.classList.add("body-modal-open");
@@ -517,4 +426,3 @@ function saveDataReg(e) {
         }
   });
 }
-

@@ -70,6 +70,7 @@ body.body-modal-open {
 }
 
 .header__list.is-hidden,
+.pagination.is-hidden,
 .pagination__previousPage.is-hidden,
 .pagination__nextPage.is-hidden,
 .pagination__dotsNext.is-hidden,
@@ -80,7 +81,8 @@ body.body-modal-open {
 .information.is-hidden,
 .search__icon.is-hidden,
 .spinner.is-hidden,
-.authorization.is-hidden {
+.authorization.is-hidden,
+.user.is-hidden {
   display: none;
 }
 
