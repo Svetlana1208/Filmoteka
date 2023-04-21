@@ -96,8 +96,13 @@
     }
 
     &__signOut {
+        cursor: pointer;
         color: var(--white-color);
         background-color: transparent;
         border: none;
+
+        &:hover, &:focus {
+            color: var(--primary-color);
+        }
     }
 }

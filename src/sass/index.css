@@ -181,6 +181,9 @@ body.body-modal-open {
   text-transform: uppercase;
   color: var(--white-color);
 }
+.header__link:hover, .header__link:focus {
+  color: var(--primary-color);
+}
 .header__link--current {
   position: relative;
 }
@@ -459,12 +462,29 @@ body.body-modal-open {
   margin-left: 3px;
   background-image: url(../images/right.svg);
 }
+.pagination__firstPage, .pagination__lastPage {
+  cursor: pointer;
+}
+.pagination__firstPage:hover, .pagination__firstPage:focus, .pagination__lastPage:hover, .pagination__lastPage:focus {
+  color: var(--primary-color);
+}
 @media (max-width: 767px) {
-  .pagination__firstPage, .pagination__lastPage, .pagination__dotsPrev, .pagination__dotsNext {
+  .pagination__firstPage, .pagination__lastPage {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .pagination__dotsPrev, .pagination__dotsNext {
     display: none;
   }
 }
 
+.pagination-number {
+  cursor: pointer;
+}
+.pagination-number:hover, .pagination-number:focus {
+  color: var(--primary-color);
+}
 .pagination-number.is-active {
   color: var(--white-color);
   background-color: var(--primary-color);
@@ -472,7 +492,6 @@ body.body-modal-open {
 
 .disabled {
   background-color: var(--background-footer);
-  color: var(--background-footer);
 }
 
 .footer {
@@ -755,14 +774,19 @@ body.body-modal-open {
     margin-left: 15px;
   }
 }
-.movie__btn.is-active {
+.movie__btn:focus, .movie__btn:hover {
   background-color: var(--primary-color);
   color: var(--white-color);
-  border: none;
+  border-color: transparent;
 }
 .movie__btn.disabledBtn {
   color: var(--light-grey-color);
   border-color: var(--light-grey-color);
+}
+.movie__btn.disabledBtn:focus, .movie__btn.disabledBtn:hover {
+  color: var(--light-grey-color);
+  border-color: var(--light-grey-color);
+  background-color: var(--white-color);
 }
 @media (min-width: 768px) {
   .movie__box {
@@ -789,7 +813,7 @@ body.body-modal-open {
     width: 125px;
   }
 }
-.movie__trailer.is-active {
+.movie__trailer:focus, .movie__trailer:hover {
   background-color: var(--primary-color);
   color: var(--white-color);
   border: none;
@@ -927,7 +951,11 @@ body.body-modal-open {
   color: var(--white-color);
 }
 .user__signOut {
+  cursor: pointer;
   color: var(--white-color);
   background-color: transparent;
   border: none;
+}
+.user__signOut:hover, .user__signOut:focus {
+  color: var(--primary-color);
 }/*# sourceMappingURL=index.css.map */

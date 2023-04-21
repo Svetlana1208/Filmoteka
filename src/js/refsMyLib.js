@@ -1,5 +1,3 @@
-import { doc } from "firebase/firestore";
-
 export const refsMyLib = {
     userLogin: document.querySelector(".user__login"),
     userSignOut: document.querySelector(".user__signOut"),

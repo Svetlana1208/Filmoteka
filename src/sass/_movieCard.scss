@@ -163,15 +163,21 @@
             }
         }
 
-        &.is-active {
+        &:focus, &:hover {
             background-color: var(--primary-color);
             color: var(--white-color);
-            border: none;
+            border-color: transparent;
         }
 
         &.disabledBtn {
             color: var(--light-grey-color);
             border-color: var(--light-grey-color);
+
+            &:focus, &:hover {
+                color: var(--light-grey-color);
+                border-color: var(--light-grey-color);
+                background-color: var(--white-color);    
+            }
           }
           
     }
@@ -201,7 +207,7 @@
             width: 125px;
         }
 
-        &.is-active {
+        &:focus, &:hover {
             background-color: var(--primary-color);
             color: var(--white-color);
             border: none;

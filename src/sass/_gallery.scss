@@ -195,7 +195,18 @@
     }
 
     &__firstPage,
-    &__lastPage,
+    &__lastPage {
+        cursor: pointer;
+
+        &:hover, &:focus {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 767px) {
+            display: none;
+        }
+    }
+
     &__dotsPrev,
     &__dotsNext {
         @media (max-width: 767px) {
@@ -204,12 +215,19 @@
     }
 }
 
-.pagination-number.is-active {
-    color: var(--white-color);
-    background-color: var(--primary-color);
+.pagination-number {
+    cursor: pointer;
+
+    &:hover, &:focus {
+        color: var(--primary-color);
+    }
+
+    &.is-active {
+        color: var(--white-color);
+        background-color: var(--primary-color);
+    }
 }
 
 .disabled {
     background-color: var(--background-footer);
-    color: var(--background-footer);
 }

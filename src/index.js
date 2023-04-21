@@ -1,9 +1,11 @@
-import {refs, key, auth} from "./js/vars";
+import authorization from "./js/authorization";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import {key, auth} from "./js/vars";
+import { refs } from "./js/refs";
 import {genresList} from "./js/genres";
 import fetchRequestGenres from "./js/genres";
 import fetchRequest from "./js/fetch";
 import modal from "./js/modal";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 
 
 let page = 1;
@@ -15,6 +17,7 @@ let data;
 let url;
 let fullUrl;
 let form;
+
 
 refs.prevButton.addEventListener("click", () => {
     updatePaginationPrev(currentPage - 1);
@@ -30,8 +33,11 @@ refs.form.addEventListener('submit', onSearch);
 refs.regModalOpenBtn.addEventListener('click', onOpenRegModal);
 
 
-getPopular();
-    
+authorization()
+.then(setTimeout(() => {
+    getPopular()}, 1000)
+)
+
 async function getPopular() {
     await fetchRequestGenres();
 

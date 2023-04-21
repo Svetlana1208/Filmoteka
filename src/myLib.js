@@ -1,9 +1,8 @@
-import { refsMyLib } from "./js/varsMyLib";
-import modal from "./js/modal";
-import {getAuth, onAuthStateChanged, signOut} from "firebase/auth";
-import {auth, db} from "./js/vars";
+import authorization from "./js/authorization";
+import { userRef } from "./js/authorization";
+import { refsMyLib } from "./js/refsMyLib";
+import modalMyLib from "./js/modalMyLib";
 import { collection, getDocs } from "firebase/firestore";
-
 
 let lastPage;
 let page = 1;
@@ -28,22 +27,11 @@ refsMyLib.nextButton.addEventListener("click", () => {
 refsMyLib.firstPage.addEventListener('click', downloadFirstPage);
 refsMyLib.lastPage.addEventListener('click', downloadLastPage);
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        const login = user.email.split('@')[0];
-        console.log(login);
-        refsMyLib.userLogin.innerHTML = `${login}`;
-        refsMyLib.userSignOut.addEventListener('click', signOutUser);
-    } else {
-        console.log("user wasn't authorization")
-    }
-})
 
-function signOutUser() {
-    signOut(getAuth());
-}
-
-getWatched();
+authorization()
+.then(setTimeout(() => {
+    getWatched()}, 1500)
+)
 
 function getWatched() {
     currentDataAll = [];
@@ -51,14 +39,12 @@ function getWatched() {
     refsMyLib.watchedBtn.classList.add("is-active");
     refsMyLib.queueBtn.classList.remove("is-active");
     refsMyLib.paginationNumbers.innerHTML = "";
+    const watchedData = getDocs(collection(userRef, "watched"));
 
-    const querySnapshot = getDocs(collection(db, "watched"));
-
-    querySnapshot
+    watchedData
     .then (PromiseResult => {
         PromiseResult._snapshot.docChanges.forEach((movie) => {
-            const aaa = movie.doc.data.value.mapValue.fields;
-            currentDataAll.push(aaa);
+            currentDataAll.push(movie.doc.data.value.mapValue.fields);
         })
         firstDownload();
     });
@@ -82,14 +68,12 @@ function getQueue() {
     refsMyLib.watchedBtn.classList.remove("is-active");
     refsMyLib.queueBtn.classList.add("is-active");
     refsMyLib.paginationNumbers.innerHTML = "";
+    const queueData = getDocs(collection(userRef, "queue"));
 
-    const querySnapshotQueue = getDocs(collection(db, "queue"));
-
-    querySnapshotQueue
+    queueData
     .then (PromiseResult => {
         PromiseResult._snapshot.docChanges.forEach((movie) => {
-            const aaa = movie.doc.data.value.mapValue.fields;
-            currentDataAll.push(aaa);
+            currentDataAll.push(movie.doc.data.value.mapValue.fields);
         })
         firstDownload();
     });
@@ -169,12 +153,11 @@ function setCurrentPage (data, page) {
         onMarkUpLib(currentData);
         handleActivePageNumber();
         buttonsStatus();
-        modal(currentData);                       
+        modalMyLib(currentData);                       
 }
 
 function onMarkUpLib(data) {
     refsMyLib.gallery.innerHTML="";
-    console.log(currentDataAll);
     currentDataAll.forEach(movie => {
         movie.genres = [];
         if(movie.genre_ids.arrayValue) {
