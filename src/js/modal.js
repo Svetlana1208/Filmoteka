@@ -65,7 +65,7 @@ const modal = (data) => {
                         function onOpenModal() {
                                 refs.modal.classList.remove("is-hidden");    
                                 document.body.classList.add("body-modal-open");
-                                document.querySelector("[data-trailerModal-button]").addEventListener('click', onYouTubeIframeAPIReady);
+                                document.querySelector("[data-trailerModal-button]").addEventListener('click', onTrailer);
                                 window.addEventListener('keydown', onEscKeyPress);
                                 refs.closeModalBtn.addEventListener('click', onCloseModal);
                                 refs.modal.addEventListener('click', onBackdropClick);
