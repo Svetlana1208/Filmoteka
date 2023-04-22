@@ -943,6 +943,7 @@ body.body-modal-open {
 .user {
   display: flex;
   justify-content: flex-end;
+  margin-top: 30px;
 }
 .user__login {
   margin-right: 30px;
