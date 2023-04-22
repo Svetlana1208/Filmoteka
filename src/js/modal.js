@@ -65,7 +65,7 @@ const modal = (data) => {
                         function onOpenModal() {
                                 refs.modal.classList.remove("is-hidden");    
                                 document.body.classList.add("body-modal-open");
-                                document.querySelector("[data-trailerModal-button]").addEventListener('click', onTrailer);
+                                document.querySelector("[data-trailerModal-button]").addEventListener('click', onYouTubeIframeAPIReady);
                                 window.addEventListener('keydown', onEscKeyPress);
                                 refs.closeModalBtn.addEventListener('click', onCloseModal);
                                 refs.modal.addEventListener('click', onBackdropClick);
@@ -155,6 +155,34 @@ const modal = (data) => {
                             }) 
                         }
 
+                        // function onYouTubeIframeAPIReady() {
+                        //     document.querySelector("[data-trailerModal]").classList.remove("is-hidden");
+                        //     document.querySelector("[data-trailerClose-button]").addEventListener('click', () => {
+                        //         stopVideo();
+                        //         document.querySelector("[data-trailerModal]").classList.add("is-hidden");
+                        //     });
+
+
+                        //     let player;
+                        //     player = new YT.Player('player', {
+                        //       width: '100%',
+                        //       videoId: trailerKey,
+                        //       events: {
+                        //         'onReady': onPlayerReady,
+                        //       }
+                        //     });
+
+                        //     function stopVideo() {
+                        //         player.stopVideo();
+                        //     }
+
+                        //     function onPlayerReady(event) {
+                        //         event.target.playVideo();
+                        //       }
+    
+                        //   }
+                          
+
                         function onTrailer() {
                             document.querySelector("[data-trailerModal]").classList.remove("is-hidden");
 
@@ -165,9 +193,11 @@ const modal = (data) => {
                                 width: '100%',
                                 videoId: trailerKey,
                                 host: 'https://www.youtube.com',
+                                origin: 'https://svetlana1208.github.io/Filmoteka/',
                             });
                         
                             player.playVideo();
+
 
                             function stopVideo() {
                                 player.stopVideo();
