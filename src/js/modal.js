@@ -155,34 +155,6 @@ const modal = (data) => {
                             }) 
                         }
 
-                        // function onYouTubeIframeAPIReady() {
-                        //     document.querySelector("[data-trailerModal]").classList.remove("is-hidden");
-                        //     document.querySelector("[data-trailerClose-button]").addEventListener('click', () => {
-                        //         stopVideo();
-                        //         document.querySelector("[data-trailerModal]").classList.add("is-hidden");
-                        //     });
-
-
-                        //     let player;
-                        //     player = new YT.Player('player', {
-                        //       width: '100%',
-                        //       videoId: trailerKey,
-                        //       events: {
-                        //         'onReady': onPlayerReady,
-                        //       }
-                        //     });
-
-                        //     function stopVideo() {
-                        //         player.stopVideo();
-                        //     }
-
-                        //     function onPlayerReady(event) {
-                        //         event.target.playVideo();
-                        //       }
-    
-                        //   }
-                          
-
                         function onTrailer() {
                             document.querySelector("[data-trailerModal]").classList.remove("is-hidden");
 

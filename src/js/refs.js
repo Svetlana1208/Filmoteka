@@ -18,6 +18,8 @@ export const refs = {
     searchIcon: document.querySelector(".search__icon"),
     searchSpinner: document.querySelector(".spinner"),
     searchInfo: document.querySelector(".search__info"),
+    searchByGenresBtn: document.querySelector(".searchBox__genresBtn"),
+    genresList: document.getElementById("genresList"),
 
     movieCardBox: document.querySelector(".movieCard__box"),
     modal: document.querySelector("[data-modal]"),

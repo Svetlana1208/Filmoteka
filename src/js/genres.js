@@ -5,7 +5,6 @@ const fetchRequestGenres = async () => {
     const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${key}&language=en-US`);
     const dataGenres = await response.json();
     makeGenresList(dataGenres);
-
     return genresList;
 }
 

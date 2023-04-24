@@ -17,6 +17,7 @@ let data;
 let url;
 let fullUrl;
 let form;
+let currentGenre;
 
 
 refs.prevButton.addEventListener("click", () => {
@@ -31,12 +32,48 @@ refs.firstPage.addEventListener('click', downloadFirstPage);
 refs.lastPage.addEventListener('click', downloadLastPage);
 refs.form.addEventListener('submit', onSearch);
 refs.regModalOpenBtn.addEventListener('click', onOpenRegModal);
-
+refs.searchByGenresBtn.addEventListener('click', showGenresList);
 
 authorization()
 .then(setTimeout(() => {
     getPopular()}, 1000)
 )
+
+function showGenresList() {
+    refs.genresList.classList.toggle("show");
+    refs.searchInfo.textContent = '';
+    document.querySelector(".search__input").value = "";
+    window.onclick = function (e) {
+      if(!e.target.matches('.searchBox__genresBtn')) {
+        if(refs.genresList.classList.contains('show')) {
+            refs.genresList.classList.remove('show');
+        }
+      }  
+    }
+    addEventListenerAllGenres();
+}
+
+function addEventListenerAllGenres() {
+    document.querySelectorAll(".searchBox__genresList p").forEach((genre) => {
+        const chosenGenre = genre.textContent;
+        genre.addEventListener('click', async () => {
+           for (const genre in genresList) {
+                if (genresList[genre] === chosenGenre) {
+                    currentGenre = genre;
+                    refs.searchInfo.innerHTML = chosenGenre;
+                }
+           }
+           refs.gallery.innerHTML = "";
+
+           url = `https://api.themoviedb.org/3/discover/movie?api_key=${key}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=${currentGenre}&with_watch_monetization_types=flatrate`
+           await setCurrentPage(1);
+           getPaginationNumbers();
+           addEventListenerAllBtn();
+           updateFirstLastPageBtn();
+           handleActivePageNumber(); 
+        })
+    })
+}
 
 async function getPopular() {
     await fetchRequestGenres();
@@ -335,7 +372,7 @@ async function onSearch(e) {
     form = e.currentTarget;
     searchQuery = form.elements.searchQuery.value;
     page = 1;
-    refs.searchInfo.textContent ='';
+    refs.searchInfo.textContent = '';
     url = `https://api.themoviedb.org/3/search/movie?api_key=${key}&query=${searchQuery}`;
     
     await setCurrentPage(page);
